@@ -16,7 +16,7 @@ class Room(models.Model):
         ('Chamran', 'Chamran'),
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=100, blank=False)
+    name = models.CharField(max_length=100, blank=False, verbose_name='Room name')
     building = models.CharField(choices=BUILDING_CHOICES, max_length=7, blank=False)
     room_number = models.DecimalField(max_digits=3, decimal_places=0, default=100)
     description = models.TextField(blank=True)

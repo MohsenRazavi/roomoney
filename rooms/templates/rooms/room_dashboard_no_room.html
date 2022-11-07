@@ -1,0 +1,23 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block page-title %}
+{% endblock %}
+
+{% block page-content %}
+    <div class="container">
+        <div class="my-3">
+           <p class="display-4" id="title" onclick="toggle()">You don't have any room!</p>
+            <button class="btn btn-primary" id="create_room_btn" onclick="toggle()">Create new room</button>
+        </div>
+        <form method="post" id="create_room_form">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="row">
+            <button class="btn btn-primary mt-3" type="submit">Create</button>
+            </div>
+        </form>
+    </div>
+    <script src="{% static 'js/create_room.js' %}"></script>
+{% endblock %}
