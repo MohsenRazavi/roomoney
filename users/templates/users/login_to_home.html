@@ -1,0 +1,30 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-title %}
+    Log in or Sign up
+{% endblock %}
+
+{% block page-content %}
+    <div class="container">
+    <div class="row">
+        <button class="btn btn-warning bg-gradiant mb-2" onclick="toggle_login()">Login</button>
+    </div>
+        <form method="post" action="{% url 'account_login' %}" id="login_form">
+            {% csrf_token %}
+            {{ login_form|crispy }}
+            <button type="submit" class="btn btn-primary my-3">Login</button>
+        </form>
+        <div class="row">
+        <button class="btn btn-warning bg-gradiant mb-2" onclick="toggle_signup()">Signup</button>
+        </div>
+        <form method="post" action="{% url 'account_signup' %}" id="signup_form">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary my-3">Signup</button>
+        </form>
+
+    </div>
+    <script src="{% static '/js/login_to_home.js' %}"></script>
+{% endblock %}
