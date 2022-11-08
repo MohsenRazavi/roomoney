@@ -1,0 +1,41 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block page-title %}
+    Profile
+{% endblock %}
+
+
+{% block page-content %}
+    <div class="container">
+        <div class="row">
+            <p class="display-4">Update your profile!</p>
+            <div class="col-9">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="row">
+                        <a href="{% url 'account_change_password' %}" class="btn btn-warning my-3">Change password</a>
+                        <button class="btn btn-primary" type="submit">update</button>
+                        <a href="{% url 'leave_room'%}" class="btn btn-danger my-3">Leave this room</a>
+                    </div>
+                </form>
+            </div>
+            <div class="col-3">
+                    <nav class="nav flex-column shadow-sm my-3 border" style="border-radius: 8px">
+
+                        <a class="nav-link active text-light bg-success">Personal info</a>
+                        <a class="nav-link active" href="{% url 'profile_update' user.id %}">Profile</a>
+                        <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
+                    </nav>
+                    <nav class="nav flex-column shadow-sm my-3 border" style="border-radius: 8px">
+                        <a class="nav-link active text-light bg-primary">Room</a>
+                        <a class="nav-link active" href="{% url 'room_dashboard' %}">Dashboard</a>
+                        <a class="nav-link" href="#">Add new Purchase</a>
+                        <a class="nav-link" href="#">Last Purchases</a>
+                        <a class="nav-link" href="#">Options</a>
+                    </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}

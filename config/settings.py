@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'crispy_forms',
+    'phonenumber_field',
 
     # local
     'users',
@@ -124,7 +125,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # all auth
-ACCOUNT_AUTHENTICATION_METHOD = 'username-email'
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 LOGIN_REDIRECT_URL = 'room_dashboard'

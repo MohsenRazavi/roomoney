@@ -22,7 +22,7 @@
                 <nav class="nav flex-column shadow-sm my-3 border" style="border-radius: 8px">
 
                     <a class="nav-link active text-light bg-success">Personal info</a>
-                    <a class="nav-link active" href="{% url 'room_dashboard' %}">Profile</a>
+                    <a class="nav-link active" href="{% url 'profile_update' user.id %}">Profile</a>
                     <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
                 </nav>
                 <nav class="nav flex-column shadow-sm my-3 border" style="border-radius: 8px">

@@ -14,4 +14,6 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('', allauth.account.views.login),
     path('room/', include('rooms.urls')),
+    path('users/', include('users.urls')),
+
 ]

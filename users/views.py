@@ -1,20 +1,29 @@
-from django.shortcuts import render
+from django.views import generic
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy, reverse
+from django.shortcuts import get_object_or_404
 
-from allauth.account.forms import LoginForm, SignupForm
-from allauth.account.views import SignupView
+from .models import CustomUser
+from .forms import UserUpdateForm
 
 
-class SignupLoginView(SignupView):
-    template_name = 'users/login_to_home.html'
+class UserUpdateView(generic.UpdateView):
+    model = CustomUser
+    form_class = UserUpdateForm
+    success_url = reverse_lazy('room_dashboard')
+    template_name = 'users/profile_update.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(SignupLoginView, self).get_context_data(**kwargs)
-        context['login_form'] = LoginForm()
-        return context
 
-# def signup_login_view(request):
-#     context = {
-#         'signup_form': SignupForm(),
-#         'login_form': LoginForm(),
-#     }
-#     return render(request, 'users/login_to_home.html', context=context)
+def leave_room_view(request):
+    user = request.user
+    if request.method == 'POST':
+        if user.has_room:
+            room = user.room.first()
+            user.has_room = False
+            room.member.remove(user)
+            user.save()
+            room.save()
+        return redirect(reverse('profile_update', args=[user.id]))
+    else: # GET request
+        return render(request, 'users/leave_room.html')
+
