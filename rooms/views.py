@@ -19,8 +19,11 @@ def room_home_view(request):
             context['form'] = RoomCreateForm()
             return render(request, 'rooms/room_dashboard_no_room.html', context=context)
     else:  # POST request
-        new_room = RoomCreateForm(request.POST)
-        if new_room.is_valid():
+        room_form = RoomCreateForm(request.POST)
+        if room_form.is_valid():
+            new_room = room_form.save()
+            new_room.member.add(user)
             new_room.save()
             user.has_room = True
+            user.save()
         return render(request, 'rooms/room_dashboard_has_room.html', context=context)

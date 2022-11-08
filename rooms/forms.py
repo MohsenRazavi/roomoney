@@ -11,5 +11,4 @@ class RoomCreateForm(ModelForm):
             'description',
             'building',
             'room_number',
-            'member',
         ]

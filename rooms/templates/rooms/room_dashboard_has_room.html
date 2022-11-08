@@ -20,11 +20,17 @@
             </div>
             <div class="col-3">
                 <nav class="nav flex-column shadow-sm my-3 border" style="border-radius: 8px">
-                    <a class="nav-link active text-light bg-primary" href="{% url 'room_dashboard' %}">Dashboard</a>
+
+                    <a class="nav-link active text-light bg-success">Personal info</a>
+                    <a class="nav-link active" href="{% url 'room_dashboard' %}">Profile</a>
+                    <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
+                </nav>
+                <nav class="nav flex-column shadow-sm my-3 border" style="border-radius: 8px">
+                    <a class="nav-link active text-light bg-primary">Room</a>
+                    <a class="nav-link active" href="{% url 'room_dashboard' %}">Dashboard</a>
                     <a class="nav-link" href="#">Add new Purchase</a>
                     <a class="nav-link" href="#">Last Purchases</a>
                     <a class="nav-link" href="#">Options</a>
-                    <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
                 </nav>
             </div>
         </div>
