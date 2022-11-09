@@ -3,16 +3,15 @@
 config URL Configuration
 
 """
-import allauth.account.views
+from allauth.account import views
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('', allauth.account.views.login),
+    path('', views.login),
     path('room/', include('rooms.urls')),
     path('users/', include('users.urls')),
 

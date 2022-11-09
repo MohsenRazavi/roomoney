@@ -12,3 +12,15 @@ class RoomCreateForm(ModelForm):
             'building',
             'room_number',
         ]
+
+
+class RoomOptionsForm(ModelForm):
+    class Meta:
+        model = Room
+        fields = [
+            'name',
+            'description',
+            'building',
+            'room_number',
+            'member',
+        ]

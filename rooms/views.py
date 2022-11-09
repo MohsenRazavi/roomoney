@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.views import generic
+from django.urls import reverse_lazy
 
-from .forms import RoomCreateForm
+from .models import Room
+from .forms import RoomCreateForm, RoomOptionsForm
 
 
 @login_required
@@ -12,7 +15,7 @@ def room_home_view(request):
         if user.has_room:
             room = user.room.first()
             members = room.member.all()
-            context = {'members': members, 'room_name': room.name}
+            context = {'members': members, 'room_name': room.name, 'room_obj': room}
             return render(request, 'rooms/room_dashboard_has_room.html', context=context)
         else:
             context['text'] = 'this one has not room'
@@ -27,3 +30,12 @@ def room_home_view(request):
             user.has_room = True
             user.save()
         return render(request, 'rooms/room_dashboard_has_room.html', context=context)
+
+
+class RoomOptionsView(generic.UpdateView):
+    model = Room
+    form_class = RoomOptionsForm
+    context_object_name = 'room'
+    template_name = 'rooms/room_options.html'
+    success_url = reverse_lazy('room_dashboard')
+

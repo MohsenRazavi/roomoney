@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 
 class Item(models.Model):
@@ -24,6 +25,9 @@ class Room(models.Model):
 
     def __str__(self):
         return f"<{self.name}, {self.building}, {self.room_number}>"
+
+    def get_absolute_url(self):
+        return reverse('room_options', args=[self.id])
 
 
 class Purchase(models.Model):
