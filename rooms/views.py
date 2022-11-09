@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
-from .models import Room
-from .forms import RoomCreateForm, RoomOptionsForm
+from .models import Room, Purchase
+from .forms import RoomCreateForm, RoomOptionsForm, NewPurchaseForm, ItemCreateForm
 
 
 @login_required
@@ -32,10 +33,41 @@ def room_home_view(request):
         return render(request, 'rooms/room_dashboard_has_room.html', context=context)
 
 
-class RoomOptionsView(generic.UpdateView):
+class RoomOptionsView(generic.UpdateView, LoginRequiredMixin):
     model = Room
     form_class = RoomOptionsForm
     context_object_name = 'room'
     template_name = 'rooms/room_options.html'
     success_url = reverse_lazy('room_dashboard')
 
+
+@login_required
+def add_new_purchase(request):
+    user = request.user
+    purchase_form = NewPurchaseForm(room=user.room.first())
+    item_form = ItemCreateForm()
+    context = {'purchase_form': purchase_form, 'item_form': item_form}
+    if request.method == 'POST':
+        print(request.POST)
+        user_form = NewPurchaseForm(request.POST, room=None)
+        if user_form.is_valid():
+
+            new_purchase = user_form.save(commit=False)
+            new_purchase.room = user.room.first()
+            new_purchase.save()
+
+            items = new_purchase.items.objects.all()
+
+            for item in items:
+                item.in_purchase = True
+
+            return redirect(reverse('room_dashboard'))
+    return render(request, 'rooms/add_new_purchase.html', context=context)
+
+
+def add_item_to_purchase(request):
+    if request.method == 'POST':
+        user_item = ItemCreateForm(request.POST)
+        if user_item.is_valid():
+            user_item.save()
+            return redirect(reverse('new_purchase'))

@@ -1,0 +1,55 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block page-title %}
+    New Purchase
+{% endblock %}
+
+
+{% block page-content %}
+    <div class="container">
+        <div class="row">
+            <p class="display-4">Add new purchase</p>
+            <div class="col-9">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ purchase_form|crispy }}
+                    <div class="row">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Add Item
+                </button>
+                        <button class="btn btn-primary my-3" type="submit">Add Purchase</button>
+                    </div>
+                </form>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Item to purchase</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                                <form action="{% url 'add_to_purchase' %}" method="post">
+                            <div class="modal-body">
+                                    {% csrf_token %}
+                                    {{ item_form|crispy }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Add to purchase</button>
+                            </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                {% include 'rooms/right_panel.html' with room=room_obj %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
