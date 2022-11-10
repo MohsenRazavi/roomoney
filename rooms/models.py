@@ -41,4 +41,4 @@ class Purchase(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='purchases', null=True)
 
     def __str__(self):
-        return self.title
+        return f"<{self.title}, {self.items}>"

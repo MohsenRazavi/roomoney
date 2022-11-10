@@ -39,14 +39,14 @@ class NewPurchaseForm(ModelForm):
             'member',
         ]
 
-    def __init__(self, room, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(NewPurchaseForm, self).__init__(*args, **kwargs)
 
-        self.fields['member'].widget = CheckboxSelectMultiple()
-        self.fields['member'].queryset = get_user_model().objects.filter(room=room)
-        self.fields['items'].widget = CheckboxSelectMultiple()
-        self.fields['items'].queryset = Item.objects.filter(in_purchase=False)
-        self.fields['purchaser'].queryset = get_user_model().objects.filter(room=room)
+        # self.fields['member'].widget = CheckboxSelectMultiple()
+        # self.fields['member'].queryset = get_user_model().objects.filter(room=room)
+        # self.fields['items'].widget = CheckboxSelectMultiple()
+        # self.fields['items'].queryset = Item.objects.filter(in_purchase=False)
+        # self.fields['purchaser'].queryset = get_user_model().objects.filter(room=room)
 
 
 class ItemCreateForm(forms.ModelForm):
