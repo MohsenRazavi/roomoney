@@ -1,7 +1,6 @@
 from django import forms
 from django.forms import ModelForm
 from django.forms.widgets import CheckboxSelectMultiple
-from django.contrib.auth import get_user_model
 
 from .models import Room, Purchase, Item
 
@@ -38,15 +37,10 @@ class NewPurchaseForm(ModelForm):
             'items',
             'member',
         ]
-
-    def __init__(self, *args, **kwargs):
-        super(NewPurchaseForm, self).__init__(*args, **kwargs)
-
-        # self.fields['member'].widget = CheckboxSelectMultiple()
-        # self.fields['member'].queryset = get_user_model().objects.filter(room=room)
-        # self.fields['items'].widget = CheckboxSelectMultiple()
-        # self.fields['items'].queryset = Item.objects.filter(in_purchase=False)
-        # self.fields['purchaser'].queryset = get_user_model().objects.filter(room=room)
+        widgets = {
+            'items': CheckboxSelectMultiple(),
+            'member': CheckboxSelectMultiple(),
+        }
 
 
 class ItemCreateForm(forms.ModelForm):

@@ -51,14 +51,16 @@ def add_new_purchase(request):
     purchase_form.fields['member'].queryset = get_user_model().objects.filter(room=room)
     purchase_form.fields['purchaser'].queryset = get_user_model().objects.filter(room=room)
     purchase_form.fields['items'].queryset = Item.objects.filter(in_purchase=False)
-    context = {'purchase_form': purchase_form, 'item_form': item_form}
+    items = Item.objects.filter(in_purchase=False)
+    context = {'purchase_form': purchase_form, 'item_form': item_form, 'items': items}
     if request.method == 'POST':
         user_form = NewPurchaseForm(request.POST)
         if user_form.is_valid():
-
+            print(request.POST)
             new_purchase = user_form.save(commit=False)
             new_purchase.room = room
             new_purchase.save()
+            user_form.save_m2m()
             print(new_purchase)
 
             items = new_purchase.items.all()
@@ -67,7 +69,13 @@ def add_new_purchase(request):
             for item in items:
                 item.in_purchase = True
                 item.save()
-            print(new_purchase.items.all())
+
+            all_items = Item.objects.all()
+            for item in all_items:
+                if not item.in_purchase:
+                    item.delete()
+
+            # print(new_purchase.items.all())
             return redirect(reverse('room_dashboard'))
     return render(request, 'rooms/add_new_purchase.html', context=context)
 
@@ -78,3 +86,10 @@ def add_item_to_purchase(request):
         if user_item.is_valid():
             user_item.save()
             return redirect(reverse('new_purchase'))
+
+
+class DeleteItemFromPurchase(generic.DeleteView):
+    model = Item
+    success_url = reverse_lazy('new_purchase')
+
+
