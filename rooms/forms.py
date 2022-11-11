@@ -26,6 +26,9 @@ class RoomOptionsForm(ModelForm):
             'room_number',
             'member',
         ]
+        widgets = {
+            'member': CheckboxSelectMultiple(),
+        }
 
 
 class NewPurchaseForm(ModelForm):

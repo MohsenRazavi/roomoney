@@ -13,6 +13,11 @@ class UserUpdateView(generic.UpdateView):
     success_url = reverse_lazy('room_dashboard')
     template_name = 'users/profile_update.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(UserUpdateView, self).get_context_data(**kwargs)
+        context['room_obj'] = self.request.user.room.first()
+        return context
+
 
 def leave_room_view(request):
     user = request.user

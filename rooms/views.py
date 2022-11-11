@@ -37,7 +37,7 @@ def room_home_view(request):
 class RoomOptionsView(generic.UpdateView, LoginRequiredMixin):
     model = Room
     form_class = RoomOptionsForm
-    context_object_name = 'room'
+    context_object_name = 'room_obj'
     template_name = 'rooms/room_options.html'
     success_url = reverse_lazy('room_dashboard')
 
@@ -52,7 +52,7 @@ def add_new_purchase(request):
     purchase_form.fields['purchaser'].queryset = get_user_model().objects.filter(room=room)
     purchase_form.fields['items'].queryset = Item.objects.filter(in_purchase=False)
     items = Item.objects.filter(in_purchase=False)
-    context = {'purchase_form': purchase_form, 'item_form': item_form, 'items': items}
+    context = {'purchase_form': purchase_form, 'item_form': item_form, 'items': items, 'room_obj': room}
     if request.method == 'POST':
         user_form = NewPurchaseForm(request.POST)
         if user_form.is_valid():
@@ -61,10 +61,8 @@ def add_new_purchase(request):
             new_purchase.room = room
             new_purchase.save()
             user_form.save_m2m()
-            print(new_purchase)
 
             items = new_purchase.items.all()
-            print(new_purchase.items.all())
 
             for item in items:
                 item.in_purchase = True
@@ -75,11 +73,11 @@ def add_new_purchase(request):
                 if not item.in_purchase:
                     item.delete()
 
-            # print(new_purchase.items.all())
             return redirect(reverse('room_dashboard'))
     return render(request, 'rooms/add_new_purchase.html', context=context)
 
 
+@login_required
 def add_item_to_purchase(request):
     if request.method == 'POST':
         user_item = ItemCreateForm(request.POST)
@@ -88,7 +86,7 @@ def add_item_to_purchase(request):
             return redirect(reverse('new_purchase'))
 
 
-class DeleteItemFromPurchase(generic.DeleteView):
+class DeleteItemFromPurchase(generic.DeleteView, LoginRequiredMixin):
     model = Item
     success_url = reverse_lazy('new_purchase')
 
