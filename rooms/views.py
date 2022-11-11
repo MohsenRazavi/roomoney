@@ -50,8 +50,8 @@ def add_new_purchase(request):
     item_form = ItemCreateForm()
     purchase_form.fields['member'].queryset = get_user_model().objects.filter(room=room)
     purchase_form.fields['purchaser'].queryset = get_user_model().objects.filter(room=room)
-    purchase_form.fields['items'].queryset = Item.objects.filter(in_purchase=False)
-    items = Item.objects.filter(in_purchase=False)
+    purchase_form.fields['items'].queryset = Item.objects.filter(in_purchase=False, room=room)
+    items = Item.objects.filter(in_purchase=False, room=room)
     context = {'purchase_form': purchase_form, 'item_form': item_form, 'items': items, 'room_obj': room}
     if request.method == 'POST':
         user_form = NewPurchaseForm(request.POST)
@@ -79,10 +79,13 @@ def add_new_purchase(request):
 
 @login_required
 def add_item_to_purchase(request):
+    room = request.user.room.first()
     if request.method == 'POST':
         user_item = ItemCreateForm(request.POST)
         if user_item.is_valid():
-            user_item.save()
+            new_item = user_item.save(commit=False)
+            new_item.room = room
+            new_item.save()
             return redirect(reverse('new_purchase'))
 
 
@@ -91,6 +94,7 @@ class DeleteItemFromPurchase(generic.DeleteView, LoginRequiredMixin):
     success_url = reverse_lazy('new_purchase')
 
 
+@login_required
 def purchase_list_view(request, pk):
     room = Room.objects.get(pk=pk)
     purchases = Purchase.objects.filter(room=room).order_by('-created_at')
@@ -101,4 +105,18 @@ def purchase_list_view(request, pk):
     return render(request, 'rooms/purchase_list.html', context=context)
 
 
+class PurchaseDeleteView(generic.DeleteView):
+    model = Purchase
+    template_name = 'rooms/purchase_delete.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(PurchaseDeleteView, self).get_context_data(**kwargs)
+        context['room_obj'] = self.request.user.room.first()
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('purchase_list', args=[self.request.user.room.first()])
+
+    def get_queryset(self):
+        queryset = Purchase.objects.filter(room=self.request.user.room.first())
+        return queryset

@@ -3,13 +3,6 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 
-class Item(models.Model):
-    name = models.CharField(max_length=50, blank=False)
-    price = models.DecimalField(max_digits=9, decimal_places=0, default=0, blank=False)
-    in_purchase = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f'<{self.name}, {self.price}>'
 
 
 class Room(models.Model):
@@ -29,6 +22,16 @@ class Room(models.Model):
 
     def get_absolute_url(self):
         return reverse('room_options', args=[self.id])
+
+
+class Item(models.Model):
+    name = models.CharField(max_length=50, blank=False)
+    price = models.DecimalField(max_digits=9, decimal_places=0, default=0, blank=False)
+    in_purchase = models.BooleanField(default=False)
+    room = models.ForeignKey(Room, related_name='item', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'<{self.name}, {self.price}>'
 
 
 class Purchase(models.Model):

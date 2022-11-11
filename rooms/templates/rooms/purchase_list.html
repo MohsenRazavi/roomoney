@@ -17,10 +17,10 @@
                             <div class="row">
                                 <div class="col"><p class="text fw-normal" style="display: inline;">Title : </p>
                                     <p class="text fw-semibold" style="display: inline;">{{ purchase.title }}</p></div>
-                            <div class="col">
-                                <p class="text fw-normal" style="display: inline;">Purchaser : </p>
-                                <p class="text" style="display: inline;">{{ purchase.purchaser }}</p>
-                            </div>
+                                <div class="col">
+                                    <p class="text fw-normal" style="display: inline;">Purchaser : </p>
+                                    <p class="text" style="display: inline;">{{ purchase.purchaser }}</p>
+                                </div>
                                 <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
                                 <div class="col"><p class="text-muted fst-italic fw-light">Date
                                     : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p></div>
@@ -43,16 +43,21 @@
                                         {% for member in purchase.member.all %}
                                             <div class="border-bottom">
                                                 <p class="fw-light mt-2">{% if member.full_name %}
-                                                Name : {{ member.full_name }}
-                                                    {% else %}
+                                                    Name : {{ member.full_name }}
+                                                {% else %}
                                                     Username : {{ member }}
                                                 {% endif %} </p>
                                                 <p class="fw-light">Phone number : {{ member.phone_number }}</p>
                                                 <p class="fw-light">Email : {{ member.email }}</p>
                                             </div>
                                         {% endfor %}
-
                                     </div>
+                                </div>
+                                <div class="row">
+                                    <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-success mt-2">Update
+                                        Purchase</a>
+                                    <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete
+                                        Purchase</a>
                                 </div>
                             </div>
                         </div>
@@ -64,4 +69,5 @@
             </div>
         </div>
     </div>
+
 {% endblock %}
