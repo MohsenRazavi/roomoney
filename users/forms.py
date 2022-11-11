@@ -8,9 +8,7 @@ class UserUpdateForm(ModelForm):
         model = CustomUser
         fields = [
             'username',
-            'first_name',
-            'last_name',
             'full_name',
             'email',
-            'phone_number'
+            'phone_number',
         ]

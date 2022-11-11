@@ -6,25 +6,55 @@
 
 {% block page-content %}
     <div class="container">
-<p class="display-4">Last Purchases</p>
+        <p class="display-4">Last Purchases</p>
         <div class="row">
             <div class="col-9">
                 {% for purchase in purchases %}
-                    <div class="card my-3 shadow-sm" data-bs-toggle="collapse" data-bs-target="#PurchaseDetail{{ forloop.counter }}"
+                    <div class="card my-3 shadow-sm" data-bs-toggle="collapse"
+                         data-bs-target="#PurchaseDetail{{ forloop.counter }}"
                          aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col"><p class="text fw-normal" style="display: inline;">Title: </p><p class="text fw-semibold" style="display: inline;">{{ purchase.title }}</p></div>
-                                <div class="col"><p class="text">Total price: {{ sum }}</p></div>
-                                <div class="col"><p class="text-muted fst-italic fw-light">Date: {{ purchase.created_at.date }}, Time: {{ purchase.created_at.time }}</p></div>
+                                <div class="col"><p class="text fw-normal" style="display: inline;">Title : </p>
+                                    <p class="text fw-semibold" style="display: inline;">{{ purchase.title }}</p></div>
+                            <div class="col">
+                                <p class="text fw-normal" style="display: inline;">Purchaser : </p>
+                                <p class="text" style="display: inline;">{{ purchase.purchaser }}</p>
+                            </div>
+                                <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
+                                <div class="col"><p class="text-muted fst-italic fw-light">Date
+                                    : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p></div>
                             </div>
                         </div>
-                                <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
-                                    <div class="card-body border-top">
-                                        Some placeholder content for the first collapse component of this multi-collapse
-                                        example. This panel is hidden by default but revealed when the user activates
-                                        the relevant trigger.
+                        <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
+                            <div class="card-body border-top">
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text fst-normal">Items :</p>
+                                        {% for item in purchase.items.all %}
+                                            <div class="border-bottom">
+                                                <p class="fw-light mt-2">Name : {{ item.name }}</p>
+                                                <p class="fw-light">Price : {{ item.price }}</p>
+                                            </div>
+                                        {% endfor %}
                                     </div>
+                                    <div class="col">
+                                        <p class="text fst-normal">Shared members :</p>
+                                        {% for member in purchase.member.all %}
+                                            <div class="border-bottom">
+                                                <p class="fw-light mt-2">{% if member.full_name %}
+                                                Name : {{ member.full_name }}
+                                                    {% else %}
+                                                    Username : {{ member }}
+                                                {% endif %} </p>
+                                                <p class="fw-light">Phone number : {{ member.phone_number }}</p>
+                                                <p class="fw-light">Email : {{ member.email }}</p>
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}

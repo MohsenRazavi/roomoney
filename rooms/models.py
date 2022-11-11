@@ -39,6 +39,14 @@ class Purchase(models.Model):
     member = models.ManyToManyField(get_user_model(), related_name='shared_purchase', blank=True)
     is_payed = models.BooleanField(default=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='purchases', null=True)
+    sum = models.PositiveIntegerField(null=True)
 
     def __str__(self):
         return f"<{self.title}, {self.items}>"
+
+    def calculate_sum(self):
+        res = 0
+        for item in self.items.all():
+            res += item.price
+        self.sum = res
+        self.save()

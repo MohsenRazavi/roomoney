@@ -61,7 +61,7 @@ def add_new_purchase(request):
             new_purchase.room = room
             new_purchase.save()
             user_form.save_m2m()
-
+            new_purchase.calculate_sum()
             items = new_purchase.items.all()
 
             for item in items:
@@ -93,16 +93,10 @@ class DeleteItemFromPurchase(generic.DeleteView, LoginRequiredMixin):
 
 def purchase_list_view(request, pk):
     room = Room.objects.get(pk=pk)
-    purchases = Purchase.objects.filter(room=room)
-
-    purchase_sum = 0
-    # for purchase in purchases:
-    #     for item in purchase.items.all():
-    #         purchase_sum += item.price
+    purchases = Purchase.objects.filter(room=room).order_by('-created_at')
     context = {
         'room_obj': room,
         'purchases': purchases,
-        'sum': purchase_sum,
     }
     return render(request, 'rooms/purchase_list.html', context=context)
 
