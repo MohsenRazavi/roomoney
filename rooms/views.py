@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
 from django.urls import reverse_lazy, reverse
 
-from .models import Room, Item
+from .models import Room, Item, Purchase
 from .forms import RoomCreateForm, RoomOptionsForm, NewPurchaseForm, ItemCreateForm
 
 
@@ -89,5 +89,22 @@ def add_item_to_purchase(request):
 class DeleteItemFromPurchase(generic.DeleteView, LoginRequiredMixin):
     model = Item
     success_url = reverse_lazy('new_purchase')
+
+
+def purchase_list_view(request, pk):
+    room = Room.objects.get(pk=pk)
+    purchases = Purchase.objects.filter(room=room)
+
+    purchase_sum = 0
+    # for purchase in purchases:
+    #     for item in purchase.items.all():
+    #         purchase_sum += item.price
+    context = {
+        'room_obj': room,
+        'purchases': purchases,
+        'sum': purchase_sum,
+    }
+    return render(request, 'rooms/purchase_list.html', context=context)
+
 
 

@@ -8,5 +8,6 @@ urlpatterns = [
     path('new_purchase/', views.add_new_purchase, name='new_purchase'),
     path('add_item_to_purchase/', views.add_item_to_purchase, name='add_to_purchase'),
     path('delete_item_from_purchase/<int:pk>/', views.DeleteItemFromPurchase.as_view(), name='delete_item_from_purchase'),
+    path('purchase_list/<int:pk>/', views.purchase_list_view, name='purchase_list')
 
 ]

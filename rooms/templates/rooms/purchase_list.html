@@ -1,0 +1,37 @@
+{% extends '_base.html' %}
+
+{% block page-title %}
+    Purchase List
+{% endblock %}
+
+{% block page-content %}
+    <div class="container">
+<p class="display-4">Last Purchases</p>
+        <div class="row">
+            <div class="col-9">
+                {% for purchase in purchases %}
+                    <div class="card my-3 shadow-sm" data-bs-toggle="collapse" data-bs-target="#PurchaseDetail{{ forloop.counter }}"
+                         aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col"><p class="text fw-normal" style="display: inline;">Title: </p><p class="text fw-semibold" style="display: inline;">{{ purchase.title }}</p></div>
+                                <div class="col"><p class="text">Total price: {{ sum }}</p></div>
+                                <div class="col"><p class="text-muted fst-italic fw-light">Date: {{ purchase.created_at.date }}, Time: {{ purchase.created_at.time }}</p></div>
+                            </div>
+                        </div>
+                                <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
+                                    <div class="card-body border-top">
+                                        Some placeholder content for the first collapse component of this multi-collapse
+                                        example. This panel is hidden by default but revealed when the user activates
+                                        the relevant trigger.
+                                    </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-3">
+                {% include 'rooms/right_panel.html' with room=room_obj %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

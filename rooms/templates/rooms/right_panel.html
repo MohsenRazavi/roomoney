@@ -9,7 +9,7 @@
                     <a class="nav-link active text-light bg-primary">Room</a>
                     <a class="nav-link active" href="{% url 'room_dashboard' %}">Dashboard</a>
                     <a class="nav-link" href="{% url 'new_purchase' %}">Add new Purchase</a>
-                    <a class="nav-link" href="#">Last Purchases</a>
+                    <a class="nav-link" href="{% url 'purchase_list' pk=room.id %}">Last Purchases</a>
                     <a class="nav-link" href="{% url 'room_options' pk=room.id %}">Options</a>
                 </nav>
 {% endif %}
