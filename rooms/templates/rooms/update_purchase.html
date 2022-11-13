@@ -1,0 +1,87 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block page-title %}
+    Edit Update
+{% endblock %}
+
+
+{% block page-content %}
+    <div class="container">
+        <div class="row">
+            <p class="display-4">Edit Purchase</p>
+            <div class="col-9">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="row">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-warning mt-2" data-bs-toggle="modal"
+                                data-bs-target="#AddItemModal">
+                            Add Item
+                        </button>
+                        <button type="button" class="btn btn-danger mt-3" data-bs-toggle="modal"
+                                data-bs-target="#DeleteItemModal">
+                            Delete Item
+                        </button>
+                        <button class="btn btn-primary my-3" type="submit">Save</button>
+                    </div>
+                </form>
+                <!-- Add Item Modal -->
+                <div class="modal fade" id="AddItemModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add item to purchase</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <form action="{% url 'add_to_purchase' %}" method="post">
+                                <div class="modal-body">
+                                    {% csrf_token %}
+                                    {{ item_form|crispy }}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Add to purchase</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Delete Item Modal -->
+                <div class="modal fade" id="DeleteItemModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete item from purchase</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            {% if items %}
+
+                                <table>
+                                    {% for item in items %}
+                                        <tr>
+                                            <form action="{% url 'delete_item_from_purchase' item.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <input type="submit" class="btn btn-secondary m-1" value="{{ item }}">
+                                            </form>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            {% else %}
+                                <p class="m-1">Empty ! No items found.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                {% include 'rooms/right_panel.html' with room=room_obj %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

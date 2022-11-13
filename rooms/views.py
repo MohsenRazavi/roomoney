@@ -56,7 +56,6 @@ def add_new_purchase(request):
     if request.method == 'POST':
         user_form = NewPurchaseForm(request.POST)
         if user_form.is_valid():
-            print(request.POST)
             new_purchase = user_form.save(commit=False)
             new_purchase.room = room
             new_purchase.save()
@@ -73,7 +72,7 @@ def add_new_purchase(request):
                 if not item.in_purchase:
                     item.delete()
 
-            return redirect(reverse('room_dashboard'))
+            return redirect(reverse('purchase_list', args=[room.id]))
     return render(request, 'rooms/add_new_purchase.html', context=context)
 
 
@@ -115,8 +114,55 @@ class PurchaseDeleteView(generic.DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('purchase_list', args=[self.request.user.room.first()])
+        return reverse_lazy('purchase_list', args=[self.request.user.room.first().id])
 
     def get_queryset(self):
         queryset = Purchase.objects.filter(room=self.request.user.room.first())
         return queryset
+
+    def post(self, request, *args, **kwargs):
+        purchase = Purchase.objects.get(pk=self.kwargs['pk'])
+        purchase.items.all().delete()
+        purchase.delete()
+
+        user = self.request.user
+        room = Room.objects.get(pk=user.room.first().id)
+        purchases = Purchase.objects.filter(room=room).order_by('-created_at')
+        context = {
+            'room_obj': room,
+            'purchases': purchases,
+        }
+        return render(request, 'rooms/purchase_list.html', context=context)
+
+
+class PurchaseUpdateView(generic.UpdateView, LoginRequiredMixin):
+    model = Purchase
+    template_name = 'rooms/update_purchase.html'
+    form_class = NewPurchaseForm
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        room = user.room.first()
+        purchase = Purchase.objects.get(pk=self.kwargs['pk'])
+
+        context = super(PurchaseUpdateView, self).get_context_data(**kwargs)
+        context['room_obj'] = self.request.user.room.first()
+        context['item_form'] = item_form = ItemCreateForm()
+        context['items'] = purchase.items.all()
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('purchase_list', args=[self.request.user.room.first().id])
+
+    def get_form(self, *args, **kwargs):
+        user = self.request.user
+        room = user.room.first()
+        purchase = Purchase.objects.get(pk=self.kwargs['pk'])
+        form = super().get_form(*args, **kwargs)
+
+        form.fields['member'].queryset = get_user_model().objects.filter(room=room)
+        form.fields['purchaser'].queryset = get_user_model().objects.filter(room=room)
+        form.fields['items'].queryset = purchase.items.all()
+
+        return form
+

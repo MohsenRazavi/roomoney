@@ -54,14 +54,18 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-success mt-2">Update
-                                        Purchase</a>
+{#                                    <a href="{% url 'update_purchase' pk=purchase.id %}" class="btn btn-success mt-2">Update#}
+{#                                        Purchase</a>#}
                                     <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete
                                         Purchase</a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete
+                                        Purchase</a>
+{#                    <a href="{% url 'update_purchase' pk=purchase.id %}" class="btn btn-success mt-2">Update#}
+{#                                        Purchase</a>#}
                 {% endfor %}
             </div>
             <div class="col-3">
