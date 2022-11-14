@@ -53,3 +53,4 @@ class Purchase(models.Model):
             res += item.price
         self.sum = res
         self.save()
+        return res

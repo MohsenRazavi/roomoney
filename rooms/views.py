@@ -60,12 +60,35 @@ def add_new_purchase(request):
             new_purchase.room = room
             new_purchase.save()
             user_form.save_m2m()
-            new_purchase.calculate_sum()
+            all_money = new_purchase.calculate_sum()
+            shared_money = all_money/new_purchase.member.count()
             items = new_purchase.items.all()
 
             for item in items:
                 item.in_purchase = True
                 item.save()
+
+            print(new_purchase.member.all())
+            print(all_money)
+            print(shared_money)
+            print(new_purchase.purchaser)
+
+            for member in new_purchase.member.all():
+                member.money -= shared_money
+                member.save()
+                # member.save_m2m()
+                if member == new_purchase.purchaser:
+                    new_purchase.purchaser.money -= shared_money
+                    new_purchase.purchaser.save()
+                    # new_purchase.purchaser.save_m2m()
+                    # print("member :", member)
+            new_purchase.purchaser.money += all_money
+            new_purchase.purchaser.save()
+            # print("purchaser first money:", new_purchase.purchaser.money)
+            # # new_purchase.purchaser.money += all_money
+            # # print(new_purchase.purchaser)
+            # # new_purchase.purchaser.save()
+            # print("purchaser second money:", new_purchase.purchaser.money)
 
             all_items = Item.objects.all()
             for item in all_items:
@@ -122,6 +145,17 @@ class PurchaseDeleteView(generic.DeleteView):
 
     def post(self, request, *args, **kwargs):
         purchase = Purchase.objects.get(pk=self.kwargs['pk'])
+
+        all_money = purchase.sum
+        members = purchase.member
+        shared_money = all_money/members.count()
+
+        for member in members.all():
+            member.money += shared_money
+            member.save()
+        purchase.purchaser.money -= all_money
+        purchase.purchaser.save()
+
         purchase.items.all().delete()
         purchase.delete()
 

@@ -6,7 +6,7 @@
 
 {% block page-content %}
     <div class="bg-secondary bg-gradiant sticky-top mb-4" style="display: block; height: 18em;">
-    <h2 class="text-dark">{{ room_name|capfirst }}</h2>
+        <h2 class="text-dark">{{ room_name|capfirst }}</h2>
     </div>
     <div class="container">
         <div class="row">
@@ -14,13 +14,25 @@
                 {% for member in members %}
                     <div class="card my-3 shadow-sm">
                         <div class="card-body">
-                            <p class="text">{{ member }}</p>
+                        <div class="row">
+                        <div class="col-10">
+                            <p class="text" style="display: inline;">{% if member.full_name %}
+                            Name : {{ member.full_name }}
+                                {% else %}
+                                Username : {{ member }}
+                            {% endif %} </p>
+                        </div>
+                        <div class="col-2">
+                            <span class="{% if member.money < 0 %}badge rounded-pill text-bg-danger{% else %}badge rounded-pill text-bg-primary{% endif %} align-self-left">Money :{{ member.money }}</span>
+                        </div>
+
+                        </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
             <div class="col-3">
-                {% include 'rooms/right_panel.html' with room=room_obj%}
+                {% include 'rooms/right_panel.html' with room=room_obj %}
             </div>
         </div>
     </div>
