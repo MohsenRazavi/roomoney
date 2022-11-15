@@ -23,7 +23,9 @@
                             {% endif %} </p>
                         </div>
                         <div class="col-2">
-                            <span class="{% if member.money < 0 %}badge rounded-pill text-bg-danger{% else %}badge rounded-pill text-bg-primary{% endif %} align-self-left">Money :{{ member.money }}</span>
+                        <h5>
+                            <span class="{% if member.money < 0 %}badge text-bg-danger{% else %}badge text-bg-primary{% endif %} align-self-left">Money :{{ member.money }}</span>
+                        </h5>
                         </div>
 
                         </div>

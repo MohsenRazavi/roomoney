@@ -68,27 +68,16 @@ def add_new_purchase(request):
                 item.in_purchase = True
                 item.save()
 
-            print(new_purchase.member.all())
-            print(all_money)
-            print(shared_money)
-            print(new_purchase.purchaser)
-
             for member in new_purchase.member.all():
-                member.money -= shared_money
-                member.save()
-                # member.save_m2m()
                 if member == new_purchase.purchaser:
                     new_purchase.purchaser.money -= shared_money
                     new_purchase.purchaser.save()
-                    # new_purchase.purchaser.save_m2m()
-                    # print("member :", member)
+                else:
+                    member.money -= shared_money
+                    member.save()
+
             new_purchase.purchaser.money += all_money
             new_purchase.purchaser.save()
-            # print("purchaser first money:", new_purchase.purchaser.money)
-            # # new_purchase.purchaser.money += all_money
-            # # print(new_purchase.purchaser)
-            # # new_purchase.purchaser.save()
-            # print("purchaser second money:", new_purchase.purchaser.money)
 
             all_items = Item.objects.all()
             for item in all_items:
@@ -151,8 +140,13 @@ class PurchaseDeleteView(generic.DeleteView):
         shared_money = all_money/members.count()
 
         for member in members.all():
-            member.money += shared_money
-            member.save()
+            if member == purchase.purchaser:
+                purchase.purchaser.money += shared_money
+                purchase.purchaser.save()
+            else:
+                member.money += shared_money
+                member.save()
+
         purchase.purchaser.money -= all_money
         purchase.purchaser.save()
 
