@@ -5,13 +5,15 @@
 {% endblock %}
 
 {% block page-content %}
-    <div class="bg-secondary bg-gradiant sticky-top mb-4" style="display: block; height: 18em;">
+    <div class="bg-secondary bg-gradiant mb-4" style="display: block; height: 18em;">
         <h2 class="text-dark">{{ room_name|capfirst }}</h2>
     </div>
     <div class="container">
+    <p class="display-4">Roommates</p>
         <div class="row">
             <div class="col-9">
                 {% for member in members %}
+                    <a href="{{ member.get_absolute_url }}" style="text-decoration: none; color: black">
                     <div class="card my-3 shadow-sm">
                         <div class="card-body">
                         <div class="row">
@@ -31,6 +33,7 @@
                         </div>
                         </div>
                     </div>
+                    </a>
                 {% endfor %}
             </div>
             <div class="col-3">

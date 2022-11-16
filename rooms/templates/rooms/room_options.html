@@ -14,13 +14,30 @@
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
+                    <form action="{% url 'find_member' %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-group my-3">
+                            <button type="submit" class="btn"><span class="input-group-text btn btn-warning"
+                                                                    id="inputGroup-sizing-default">Search</span>
+                            </button>
+                            <input type="text" class="form-control" aria-label="Sizing example input"
+                                   aria-describedby="inputGroup-sizing-default" name="s_name">
+                        </div>
+
+                    </form>
+                    {% if s_name %}
+                    {% for name in s_name %}
+                        <p>{{ name }}</p>
+                    {% endfor %}
+
+                    {% endif %}
                     <div class="row">
                         <button class="btn btn-primary my-3" type="submit">Save</button>
                     </div>
                 </form>
             </div>
             <div class="col-3">
-                    {% include 'rooms/right_panel.html' with room=room_obj%}
+                {% include 'rooms/right_panel.html' with room=room_obj %}
             </div>
         </div>
     </div>

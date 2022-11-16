@@ -1,0 +1,102 @@
+{% extends '_base.html' %}
+
+{% block page-title %}
+    Roommate
+{% endblock %}
+
+{% block page-content %}
+
+    <div class="bg-secondary bg-gradiant mb-4">
+        <h2 class="text-dark">{{ room_name|capfirst }}</h2>
+    </div>
+
+    <div class="container">
+        <span class="display-4 text-capitalize">{{ roommate }}</span>
+        <div class="row mt-3">
+            <div class="col-9">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        Information
+                    </div>
+                    <div class="card-body fs-5 mt-2 ">
+                        <div>
+                            <span class="fw-light">Full name : </span>
+                            <span class="fw-normal">{{ roommate.full_name }}</span>
+                        </div>
+                        <div class="my-4">
+                            <span class="fw-light">Phone number : </span>
+                            <span class="fw-normal">{{ roommate.phone_number }}</span>
+                        </div>
+                        <div>
+                            <span class="fw-light">Email : </span>
+                            <span class="fw-normal">{{ roommate.email }}</span>
+                        </div>
+
+                        <div class="my-4">
+                            <span class="fw-light">Money :  </span>
+                            <span class="fw-normal">{{ roommate.money }}</span>
+                        </div>
+
+                    </div>
+                </div>
+                <p class="fs-4 my-3">
+                    Shared in :
+                </p>
+                {% for purchase in purchases %}
+                    <div class="card my-3 shadow-sm" data-bs-toggle="collapse"
+                         data-bs-target="#PurchaseDetail{{ forloop.counter }}"
+                         aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col"><p class="text fw-normal" style="display: inline;">Title : </p>
+                                    <p class="text fw-semibold" style="display: inline;">{{ purchase.title }}</p></div>
+                                <div class="col">
+                                    <p class="text fw-normal" style="display: inline;">Purchaser : </p>
+                                    <p class="text" style="display: inline;">{{ purchase.purchaser }}</p>
+                                </div>
+                                <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
+                                <div class="col"><p class="text-muted fst-italic fw-light">Date
+                                    : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p></div>
+                            </div>
+                        </div>
+                        <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
+                            <div class="card-body border-top">
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text fst-normal">Items :</p>
+                                        {% for item in purchase.items.all %}
+                                            <div class="border-bottom">
+                                                <p class="fw-light mt-2">Name : {{ item.name }}</p>
+                                                <p class="fw-light">Price : {{ item.price }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col">
+                                        <p class="text fst-normal">Shared members :</p>
+                                        {% for member in purchase.member.all %}
+                                            <div class="border-bottom">
+                                                <p class="fw-light mt-2">{% if member.full_name %}
+                                                    Name : {{ member.full_name }}
+                                                {% else %}
+                                                    Username : {{ member }}
+                                                {% endif %} </p>
+                                                <p class="fw-light">Phone number : {{ member.phone_number }}</p>
+                                                <p class="fw-light">Email : {{ member.email }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-3">
+                {% include 'rooms/right_panel.html' with room=room_obj %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

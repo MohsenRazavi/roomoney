@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
 from django.urls import reverse_lazy, reverse
+from django.db.models import Q
 
 from .models import Room, Item, Purchase
 from .forms import RoomCreateForm, RoomOptionsForm, NewPurchaseForm, ItemCreateForm
@@ -20,7 +21,6 @@ def room_home_view(request):
             context = {'members': members, 'room_name': room.name, 'room_obj': room}
             return render(request, 'rooms/room_dashboard_has_room.html', context=context)
         else:
-            context['text'] = 'this one has not room'
             context['form'] = RoomCreateForm()
             return render(request, 'rooms/room_dashboard_no_room.html', context=context)
     else:  # POST request
@@ -36,10 +36,16 @@ def room_home_view(request):
 
 class RoomOptionsView(generic.UpdateView, LoginRequiredMixin):
     model = Room
-    form_class = RoomOptionsForm
+    # form_class = RoomOptionsForm
     context_object_name = 'room_obj'
     template_name = 'rooms/room_options.html'
     success_url = reverse_lazy('room_dashboard')
+
+    def get_form(self, *args, **kwargs):
+        room = Room.objects.get(id=self.kwargs['pk'])
+        form = RoomOptionsForm(instance=room)
+        # form.fields['member'].queryset = get_user_model().objects.filter(room=room)
+        return form
 
 
 @login_required
@@ -61,7 +67,7 @@ def add_new_purchase(request):
             new_purchase.save()
             user_form.save_m2m()
             all_money = new_purchase.calculate_sum()
-            shared_money = all_money/new_purchase.member.count()
+            shared_money = all_money / new_purchase.member.count()
             items = new_purchase.items.all()
 
             for item in items:
@@ -137,7 +143,7 @@ class PurchaseDeleteView(generic.DeleteView):
 
         all_money = purchase.sum
         members = purchase.member
-        shared_money = all_money/members.count()
+        shared_money = all_money / members.count()
 
         for member in members.all():
             if member == purchase.purchaser:
@@ -163,34 +169,19 @@ class PurchaseDeleteView(generic.DeleteView):
         return render(request, 'rooms/purchase_list.html', context=context)
 
 
-class PurchaseUpdateView(generic.UpdateView, LoginRequiredMixin):
-    model = Purchase
-    template_name = 'rooms/update_purchase.html'
-    form_class = NewPurchaseForm
+class RoommateOutView(generic.DetailView):
+    model = get_user_model()
+    template_name = 'rooms/roommate_out_view.html'
+    context_object_name = 'roommate'
 
     def get_context_data(self, **kwargs):
-        user = self.request.user
-        room = user.room.first()
-        purchase = Purchase.objects.get(pk=self.kwargs['pk'])
-
-        context = super(PurchaseUpdateView, self).get_context_data(**kwargs)
+        context = super(RoommateOutView, self).get_context_data(**kwargs)
         context['room_obj'] = self.request.user.room.first()
-        context['item_form'] = item_form = ItemCreateForm()
-        context['items'] = purchase.items.all()
-        return context
 
-    def get_success_url(self):
-        return reverse_lazy('purchase_list', args=[self.request.user.room.first().id])
-
-    def get_form(self, *args, **kwargs):
         user = self.request.user
+        roommate = get_user_model().objects.filter(id=self.kwargs['pk'])
         room = user.room.first()
-        purchase = Purchase.objects.get(pk=self.kwargs['pk'])
-        form = super().get_form(*args, **kwargs)
-
-        form.fields['member'].queryset = get_user_model().objects.filter(room=room)
-        form.fields['purchaser'].queryset = get_user_model().objects.filter(room=room)
-        form.fields['items'].queryset = purchase.items.all()
-
-        return form
+        purchases = Purchase.objects.filter(Q(member__in=roommate) | Q(purchaser__in=roommate)).order_by('-created_at')
+        context['purchases'] = purchases
+        return context
 
