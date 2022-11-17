@@ -11,5 +11,5 @@ class CustomUserAdmin(admin.ModelAdmin):
         'full_name',
         'has_room',
         'phone_number',
-        'status'
+        # 'status'
     )

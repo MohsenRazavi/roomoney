@@ -32,6 +32,7 @@ def room_home_view(request):
             new_room.save()
             user.has_room = True
             user.save()
+            context['room_obj'] = new_room
         return render(request, 'rooms/room_dashboard_has_room.html', context=context)
 
 
@@ -210,3 +211,32 @@ class RoommateOutView(generic.DetailView):
         purchases = Purchase.objects.filter(Q(member__in=roommate) | Q(purchaser__in=roommate)).order_by('-created_at')
         context['purchases'] = purchases
         return context
+
+
+def room_delete_view(request, pk):
+    room = Room.objects.get(id=pk)
+    context = {'room_obj': room}
+    if request.method == 'POST':
+        members = room.member.all()
+        purchases = room.purchases.all()
+
+        for member in members:
+            member.has_room = False
+            member.money = 0
+            member.status = get_user_model().STATUS_CHOICES[0][0]
+            member.save()
+        for purchase in purchases:
+            for item in purchase.items.all():
+                item.delete()
+            purchase.delete()
+        room.delete()
+        return redirect(reverse('room_dashboard'))
+    else: # GET request
+        return render(request, 'rooms/room_delete.html', context=context)
+
+
+def item_list_view(request, pk):
+    room = Room.objects.get(pk=pk)
+    items = Item.objects.filter(room=room)
+    context = {'items': items, 'room_obj': room}
+    return render(request, 'rooms/item_list.html', context=context)

@@ -15,9 +15,12 @@
                     {% csrf_token %}
                     {{ form|crispy }}
                     <div class="row">
-                        <button class="btn btn-primary my-3" type="submit">Save</button>
+                        <button class="btn btn-primary mt-3" type="submit">Save</button>
                     </div>
                 </form>
+                <div class="row">
+                <a href="{% url 'room_delete' room_obj.id %}" class="btn btn-danger my-3">Delete Room</a>
+                </div>
             </div>
             <div class="col-3">
                 {% include 'rooms/right_panel.html' with room=room_obj %}

@@ -28,6 +28,7 @@ class Item(models.Model):
     price = models.DecimalField(max_digits=9, decimal_places=0, default=0, blank=False)
     in_purchase = models.BooleanField(default=False)
     room = models.ForeignKey(Room, related_name='item', on_delete=models.CASCADE)
+    datetime_bought = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return f'<{self.name}, {self.price}>'
