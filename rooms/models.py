@@ -3,14 +3,13 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 
-
-
 class Room(models.Model):
     BUILDING_CHOICES = (
         ('Mofateh', 'Mofateh'),
         ('Chamran', 'Chamran'),
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE, related_name='created_room')
     name = models.CharField(max_length=100, blank=False, verbose_name='Room name')
     building = models.CharField(choices=BUILDING_CHOICES, max_length=7, blank=False)
     room_number = models.DecimalField(max_digits=3, decimal_places=0, default=100)

@@ -28,6 +28,7 @@ def room_home_view(request):
         if room_form.is_valid():
             new_room = room_form.save()
             new_room.member.add(user)
+            new_room.creator = user
             new_room.save()
             user.has_room = True
             user.save()
@@ -36,16 +37,18 @@ def room_home_view(request):
 
 class RoomOptionsView(generic.UpdateView, LoginRequiredMixin):
     model = Room
-    # form_class = RoomOptionsForm
+    form_class = RoomOptionsForm
     context_object_name = 'room_obj'
     template_name = 'rooms/room_options.html'
     success_url = reverse_lazy('room_dashboard')
 
-    def get_form(self, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        super(RoomOptionsView, self).post(self, request, *args, **kwargs)
         room = Room.objects.get(id=self.kwargs['pk'])
-        form = RoomOptionsForm(instance=room)
-        # form.fields['member'].queryset = get_user_model().objects.filter(room=room)
-        return form
+        for member in room.member.all():
+            member.has_room = True
+            member.save()
+        return redirect(reverse_lazy('room_dashboard'))
 
 
 @login_required
@@ -80,9 +83,21 @@ def add_new_purchase(request):
                     new_purchase.purchaser.save()
                 else:
                     member.money -= shared_money
+                    if member.money < 0:
+                        member.status = get_user_model().STATUS_CHOICES[1][0]
+                    elif member.money == 0:
+                        member.status = get_user_model().STATUS_CHOICES[0][0]
+                    else:
+                        member.status = get_user_model().STATUS_CHOICES[2][0]
                     member.save()
 
             new_purchase.purchaser.money += all_money
+            if new_purchase.purchaser.money < 0:
+                new_purchase.purchaser.status = get_user_model().STATUS_CHOICES[1][0]
+            elif new_purchase.purchaser.money == 0:
+                new_purchase.purchase.purchaser.status = get_user_model().STATUS_CHOICES[0][0]
+            else:
+                new_purchase.purchaser.status = get_user_model().STATUS_CHOICES[2][0]
             new_purchase.purchaser.save()
 
             all_items = Item.objects.all()
@@ -151,11 +166,22 @@ class PurchaseDeleteView(generic.DeleteView):
                 purchase.purchaser.save()
             else:
                 member.money += shared_money
+                if member.money < 0:
+                    member.status = get_user_model().STATUS_CHOICES[1][0]
+                elif member.money == 0:
+                    member.status = get_user_model().STATUS_CHOICES[0][0]
+                else:
+                    member.status = get_user_model().STATUS_CHOICES[2][0]
                 member.save()
 
         purchase.purchaser.money -= all_money
+        if purchase.purchaser.money < 0:
+            purchase.purchaser.status = get_user_model().STATUS_CHOICES[1][0]
+        elif purchase.purchaser.money == 0:
+            purchase.purchaser.status = get_user_model().STATUS_CHOICES[0][0]
+        else:
+            purchase.purchaser.status = get_user_model().STATUS_CHOICES[2][0]
         purchase.purchaser.save()
-
         purchase.items.all().delete()
         purchase.delete()
 
@@ -184,4 +210,3 @@ class RoommateOutView(generic.DetailView):
         purchases = Purchase.objects.filter(Q(member__in=roommate) | Q(purchaser__in=roommate)).order_by('-created_at')
         context['purchases'] = purchases
         return context
-

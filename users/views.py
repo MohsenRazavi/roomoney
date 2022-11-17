@@ -2,6 +2,7 @@ from django.views import generic
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
 
 from .models import CustomUser
 from .forms import UserUpdateForm
@@ -21,6 +22,9 @@ class UserUpdateView(generic.UpdateView):
 
 def leave_room_view(request):
     user = request.user
+    user.money = 0
+    user.status = get_user_model().STATUS_CHOICES[0][0]
+
     if request.method == 'POST':
         if user.has_room:
             room = user.room.first()
@@ -28,7 +32,7 @@ def leave_room_view(request):
             room.member.remove(user)
             user.save()
             room.save()
-        return redirect(reverse('profile_update', args=[user.id]))
+        return redirect(reverse('room_dashboard'))
     else: # GET request
         return render(request, 'users/leave_room.html')
 
