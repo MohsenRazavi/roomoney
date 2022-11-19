@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import generic
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
@@ -36,7 +36,7 @@ def room_home_view(request):
         return render(request, 'rooms/room_dashboard_has_room.html', context=context)
 
 
-class RoomOptionsView(generic.UpdateView, LoginRequiredMixin):
+class RoomOptionsView(UserPassesTestMixin, generic.UpdateView, LoginRequiredMixin):
     model = Room
     form_class = RoomOptionsForm
     context_object_name = 'room_obj'
@@ -50,6 +50,11 @@ class RoomOptionsView(generic.UpdateView, LoginRequiredMixin):
             member.has_room = True
             member.save()
         return redirect(reverse_lazy('room_dashboard'))
+
+    def test_func(self):
+        user = self.request.user
+        room = user.room.first()
+        return user == room.creator
 
 
 @login_required
@@ -84,28 +89,15 @@ def add_new_purchase(request):
                     new_purchase.purchaser.save()
                 else:
                     member.money -= shared_money
-                    if member.money < 0:
-                        member.status = get_user_model().STATUS_CHOICES[1][0]
-                    elif member.money == 0:
-                        member.status = get_user_model().STATUS_CHOICES[0][0]
-                    else:
-                        member.status = get_user_model().STATUS_CHOICES[2][0]
                     member.save()
 
             new_purchase.purchaser.money += all_money
-            if new_purchase.purchaser.money < 0:
-                new_purchase.purchaser.status = get_user_model().STATUS_CHOICES[1][0]
-            elif new_purchase.purchaser.money == 0:
-                new_purchase.purchase.purchaser.status = get_user_model().STATUS_CHOICES[0][0]
-            else:
-                new_purchase.purchaser.status = get_user_model().STATUS_CHOICES[2][0]
             new_purchase.purchaser.save()
 
             all_items = Item.objects.all()
             for item in all_items:
                 if not item.in_purchase:
                     item.delete()
-
             return redirect(reverse('purchase_list', args=[room.id]))
     return render(request, 'rooms/add_new_purchase.html', context=context)
 
@@ -138,7 +130,7 @@ def purchase_list_view(request, pk):
     return render(request, 'rooms/purchase_list.html', context=context)
 
 
-class PurchaseDeleteView(generic.DeleteView):
+class PurchaseDeleteView(UserPassesTestMixin, generic.DeleteView):
     model = Purchase
     template_name = 'rooms/purchase_delete.html'
 
@@ -146,6 +138,11 @@ class PurchaseDeleteView(generic.DeleteView):
         context = super(PurchaseDeleteView, self).get_context_data(**kwargs)
         context['room_obj'] = self.request.user.room.first()
         return context
+
+    def test_func(self):
+        user = self.request.user
+        room = get_object_or_404(Purchase, id=self.kwargs['pk']).room
+        return user in room.member.all()
 
     def get_success_url(self):
         return reverse_lazy('purchase_list', args=[self.request.user.room.first().id])
@@ -167,21 +164,9 @@ class PurchaseDeleteView(generic.DeleteView):
                 purchase.purchaser.save()
             else:
                 member.money += shared_money
-                if member.money < 0:
-                    member.status = get_user_model().STATUS_CHOICES[1][0]
-                elif member.money == 0:
-                    member.status = get_user_model().STATUS_CHOICES[0][0]
-                else:
-                    member.status = get_user_model().STATUS_CHOICES[2][0]
                 member.save()
 
         purchase.purchaser.money -= all_money
-        if purchase.purchaser.money < 0:
-            purchase.purchaser.status = get_user_model().STATUS_CHOICES[1][0]
-        elif purchase.purchaser.money == 0:
-            purchase.purchaser.status = get_user_model().STATUS_CHOICES[0][0]
-        else:
-            purchase.purchaser.status = get_user_model().STATUS_CHOICES[2][0]
         purchase.purchaser.save()
         purchase.items.all().delete()
         purchase.delete()
@@ -196,10 +181,15 @@ class PurchaseDeleteView(generic.DeleteView):
         return render(request, 'rooms/purchase_list.html', context=context)
 
 
-class RoommateOutView(generic.DetailView):
+class RoommateOutView(UserPassesTestMixin, generic.DetailView):
     model = get_user_model()
     template_name = 'rooms/roommate_out_view.html'
     context_object_name = 'roommate'
+
+    def test_func(self):
+        user = self.request.user
+        room = get_object_or_404(get_user_model(), id=self.kwargs['pk']).room
+        return user in room.member.all()
 
     def get_context_data(self, **kwargs):
         context = super(RoommateOutView, self).get_context_data(**kwargs)
