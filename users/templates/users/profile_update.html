@@ -11,7 +11,7 @@
         <div class="row">
             <p class="display-4">Update your profile!</p>
             <div class="col-9">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form|crispy }}
                     <div class="row">

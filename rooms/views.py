@@ -239,6 +239,7 @@ def item_list_view(request, pk):
     context = {'items': items, 'room_obj': room}
     return render(request, 'rooms/item_list.html', context=context)
 
+
 @login_required
 def checkout_view(request, pk):
     user = request.user

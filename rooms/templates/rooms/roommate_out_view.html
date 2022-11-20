@@ -1,4 +1,5 @@
 {% extends '_base.html' %}
+{% load static %}
 
 {% block page-title %}
     Roommate
@@ -11,30 +12,49 @@
     </div>
 
     <div class="container">
-        <span class="display-4 text-capitalize">{{ roommate }}</span>
         <div class="row mt-3">
             <div class="col-9">
+                {% if roommate.profile_photo %}
+                    <img src="{{ roommate.profile_photo.url }}" alt="{{ roommate }} profile photo"
+                         class="rounded-circle shadow mx-auto d-block"
+                         height="200" width="200">
+                {% else %}
+                    <img src="{% static 'img/users/profile/anonymous.png' %}" alt="{{ roommate }} profile photo"
+                         class="rounded-circle shadow mx-auto d-block" height="200" width="200">
+                {% endif %}
+            {% if roommate.biography %}
+                <p class="text-center fs-6 fw-light my-3">{{ roommate.biography }}</p>
+            {% else %}
+                <p class="text-center fs-6 fw-light my-3">I'm {{ roommate.full_name }} !</p>
+            {% endif %}
                 <div class="card shadow-sm">
                     <div class="card-header">
-                        Information
+                        Info
                     </div>
                     <div class="card-body fs-5 mt-2 ">
+                        <div class="mb-4">
+                            <span class="fw-light">Username : </span>
+                            <span class="fw-normal">@{{ roommate.username }}</span>
+                        </div>
                         <div>
                             <span class="fw-light">Full name : </span>
+                            {% if roommate.full_name %}
                             <span class="fw-normal">{{ roommate.full_name }}</span>
+                            {% else %}
+                            <span class="fw-normal">-</span>
+                            {% endif %}
                         </div>
                         <div class="my-4">
                             <span class="fw-light">Phone number : </span>
+                            {% if roommate.phone_number %}
                             <span class="fw-normal">{{ roommate.phone_number }}</span>
+                            {% else %}
+                            <span class="fw-normal">-</span>
+                            {% endif %}
                         </div>
-                        <div>
+                        <div class="mb-4">
                             <span class="fw-light">Email : </span>
                             <span class="fw-normal">{{ roommate.email }}</span>
-                        </div>
-
-                        <div class="my-4">
-                            <span class="fw-light">Money :  </span>
-                            <span class="fw-normal">{{ roommate.money }}</span>
                         </div>
 
                     </div>
@@ -55,18 +75,18 @@
                                             <p class="text fw-normal" style="display: inline;">Purchaser : </p>
                                             <p class="text" style="display: inline;">{{ purchase.purchaser }}</p>
                                         </div>
+
+                                        <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
+                                        <div class="col"><p class="text-muted fst-italic fw-light">Date
+                                            : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p>
+                                        </div>
                                         <div class="col">
-                                            <p class="text fw-normal" style="display: inline;">Checked out :</p>
                                             {% if purchase.is_payed %}
                                                 <p class="badge text fs-6 text-bg-light" style="display: inline;">
                                                     ✔</p>
                                             {% else %}
                                                 <p class="badge text fs-6 text-bg-light" style="display: inline;">❌</p>
                                             {% endif %}
-                                        </div>
-                                        <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
-                                        <div class="col"><p class="text-muted fst-italic fw-light">Date
-                                            : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -114,18 +134,18 @@
                                         <div class="col"><p class="text fw-normal" style="display: inline;">Title : </p>
                                             <p class="text fw-semibold"
                                                style="display: inline;">{{ purchase.title }}</p></div>
+
+                                        <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
+                                        <div class="col"><p class="text-muted fst-italic fw-light">Date
+                                            : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p>
+                                        </div>
                                         <div class="col">
-                                            <p class="text fw-normal" style="display: inline;">Checked out :</p>
                                             {% if purchase.is_payed %}
                                                 <p class="badge text fs-6 text-bg-light" style="display: inline;">
                                                     ✔</p>
                                             {% else %}
                                                 <p class="badge text fs-6 text-bg-light" style="display: inline;">❌</p>
                                             {% endif %}
-                                        </div>
-                                        <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
-                                        <div class="col"><p class="text-muted fst-italic fw-light">Date
-                                            : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p>
                                         </div>
                                     </div>
                                 </div>

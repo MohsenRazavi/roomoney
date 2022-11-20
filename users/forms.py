@@ -8,7 +8,9 @@ class UserUpdateForm(ModelForm):
         model = CustomUser
         fields = [
             'username',
+            'profile_photo',
             'full_name',
+            'biography',
             'email',
             'phone_number',
         ]

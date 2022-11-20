@@ -1,4 +1,5 @@
 {% extends '_base.html' %}
+{% load static %}
 
 {% block page-title %}
     Room Dashboard
@@ -19,15 +20,20 @@
                         <div class="card-body">
                         <div class="row">
                         <div class="col-10">
+                        {% if member.profile_photo %}
+                            <img src="{{ member.profile_photo.url }}" alt="{{ member }} profile photo" class="rounded-circle shadow-sm" height="50" width="50">
+                        {% else %}
+                            <img src="{% static 'img/users/profile/anonymous.png' %}" alt="{{ member }} profile photo" class="rounded-circle shadow-sm" height="50" width="50">
+                        {% endif %} 
                             <p class="text" style="display: inline;">{% if member.full_name %}
-                            Name : {{ member.full_name }}
+                              {{ member.full_name }}
                                 {% else %}
-                                Username : {{ member }}
+                                User: {{ member }}
                             {% endif %} </p>
                         </div>
                         <div class="col-2">
                         <h5>
-                            <span class="{% if member.money < 0 %}badge text-bg-danger{% elif member.money == 0 %}badge text-bg-primary{% else %}badge text-bg-success{% endif %} align-self-left">Money :{{ member.money }}</span>
+                            <span class="align-middle {% if member.money < 0 %}badge text-bg-danger{% elif member.money == 0 %}badge text-bg-primary{% else %}badge text-bg-success{% endif %} align-self-left">Money :{{ member.money }}</span>
                         </h5>
                         </div>
 

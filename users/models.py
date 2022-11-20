@@ -11,6 +11,8 @@ class CustomUser(AbstractUser):
     full_name = models.CharField(max_length=35, blank=True, null=True, default='')
     phone_number = PhoneNumberField(blank=True, null=True, default='')
     money = models.IntegerField(blank=True, null=True, default=0)
+    profile_photo = models.ImageField(upload_to='users/profile', blank=True, null=True)
+    biography = models.CharField(max_length=250, blank=True, null=True)
 
     def __str__(self):
         if self.full_name:
