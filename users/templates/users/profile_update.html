@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block page-title %}
     Profile
@@ -7,9 +8,13 @@
 
 
 {% block page-content %}
+    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
+        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
+        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
+    </div>
     <div class="container">
         <div class="row">
-            <p class="display-4">Update your profile!</p>
+            <p class="display-4 mt-3">Update your profile!</p>
             <div class="col-9">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -17,12 +22,12 @@
                     <div class="row">
                         <a href="{% url 'account_change_password' %}" class="btn btn-warning my-3">Change password</a>
                         <button class="btn btn-primary" type="submit">Save</button>
-                        <a href="{% url 'leave_room'%}" class="btn btn-danger my-3">Leave this room</a>
+                        <a href="{% url 'leave_room' %}" class="btn btn-danger my-3">Leave this room</a>
                     </div>
                 </form>
             </div>
             <div class="col-3">
-                    {% include 'rooms/right_panel.html' with room=room_obj%}
+                {% include 'rooms/right_panel.html' with room=room_obj %}
             </div>
         </div>
     </div>

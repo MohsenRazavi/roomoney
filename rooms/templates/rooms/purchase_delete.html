@@ -1,46 +1,52 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block page-title %}
-Delete Purchase
+    Delete Purchase
 {% endblock %}
 
 
 {% block page-content %}
-<div class="container">
-<p class="display-3">Are you sure ?!</p>
-<p>Are you sure you want to delete {{ purchase.title }}?</p>
-                            <div class="card-body border-top pt-3">
-                                <div class="row">
-                                    <div class="col">
-                                        <p class="text fst-normal">Items :</p>
-                                        {% for item in purchase.items.all %}
-                                            <div class="border-bottom">
-                                                <p class="fw-light mt-2">Name : {{ item.name }}</p>
-                                                <p class="fw-light">Price : {{ item.price }}</p>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="col">
-                                        <p class="text fst-normal">Shared members :</p>
-                                        {% for member in purchase.member.all %}
-                                            <div class="border-bottom">
-                                                <p class="fw-light mt-2">{% if member.full_name %}
-                                                    Name : {{ member.full_name }}
-                                                {% else %}
-                                                    Username : {{ member }}
-                                                {% endif %} </p>
-                                                <p class="fw-light">Phone number : {{ member.phone_number }}</p>
-                                                <p class="fw-light">Email : {{ member.email }}</p>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-    <form method="post">
-        {% csrf_token %}
-        <div class="row">
-        <a href="{% url 'purchase_list' pk=room_obj.id %}" class="btn btn-primary my-3" type="submit">Back to purchase list</a>
-        <button type="submit" class="btn btn-danger">Delete</button>
-        </div>
-    </form>
-</div>
+    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
+        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
+        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
+    </div>
+    <div class="container">
+        <p class="display-3 mt-3">Are you sure ?!</p>
+        <p>Are you sure you want to delete {{ purchase.title }}?</p>
+        <div class="card-body border-top pt-3">
+            <div class="row">
+                <div class="col">
+                    <p class="text fst-normal">Items :</p>
+                    {% for item in purchase.items.all %}
+                        <div class="border-bottom">
+                            <p class="fw-light mt-2">Name : {{ item.name }}</p>
+                            <p class="fw-light">Price : {{ item.price }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col">
+                    <p class="text fst-normal">Shared members :</p>
+                    {% for member in purchase.member.all %}
+                        <div class="border-bottom">
+                            <p class="fw-light mt-2">{% if member.full_name %}
+                                Name : {{ member.full_name }}
+                            {% else %}
+                                Username : {{ member }}
+                            {% endif %} </p>
+                            <p class="fw-light">Phone number : {{ member.phone_number }}</p>
+                            <p class="fw-light">Email : {{ member.email }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <a href="{% url 'purchase_list' pk=room_obj.id %}" class="btn btn-primary my-3" type="submit">Back
+                            to purchase list</a>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
 {% endblock %}

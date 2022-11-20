@@ -6,40 +6,43 @@
 {% endblock %}
 
 {% block page-content %}
-    <div class="bg-secondary bg-gradiant mb-4" style="display: block; height: 18em;">
-        <h2 class="text-dark">{{ room_name|capfirst }}</h2>
-    <p>{{ room_obj.description }}</p>
+    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
+        <p class="text-light text-center fs-2" >{{ room_name|capfirst }}</p>
+        <p class="text-light text-center fs-6" >{{ room_obj.description }}</p>
     </div>
     <div class="container">
-    <p class="display-4">Roommates</p>
+        <p class="display-4 mt-2">Roommates</p>
         <div class="row">
             <div class="col-9">
                 {% for member in members %}
                     <a href="{{ member.get_absolute_url }}" style="text-decoration: none; color: black">
-                    <div class="card my-3 shadow-sm">
-                        <div class="card-body">
-                        <div class="row">
-                        <div class="col-10">
-                        {% if member.profile_photo %}
-                            <img src="{{ member.profile_photo.url }}" alt="{{ member }} profile photo" class="rounded-circle shadow-sm" height="50" width="50">
-                        {% else %}
-                            <img src="{% static 'img/users/profile/anonymous.png' %}" alt="{{ member }} profile photo" class="rounded-circle shadow-sm" height="50" width="50">
-                        {% endif %} 
-                            <p class="text" style="display: inline;">{% if member.full_name %}
-                              {{ member.full_name }}
-                                {% else %}
-                                User: {{ member }}
-                            {% endif %} </p>
-                        </div>
-                        <div class="col-2">
-                        <h5>
-                            <span class="align-middle {% if member.money < 0 %}badge text-bg-danger{% elif member.money == 0 %}badge text-bg-primary{% else %}badge text-bg-success{% endif %} align-self-left">Money :{{ member.money }}</span>
-                        </h5>
-                        </div>
+                        <div class="card my-3 shadow-sm">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-10">
+                                        {% if member.profile_photo %}
+                                            <img src="{{ member.profile_photo.url }}" alt="{{ member }} profile photo"
+                                                 class="rounded-circle shadow-sm" height="50" width="50">
+                                        {% else %}
+                                            <img src="{% static 'img/users/profile/anonymous.png' %}"
+                                                 alt="{{ member }} profile photo" class="rounded-circle shadow-sm"
+                                                 height="50" width="50">
+                                        {% endif %}
+                                        <p class="text m-1" style="display: inline;">{% if member.full_name %}
+                                            {{ member.full_name }}
+                                        {% else %}
+                                            @{{ member|lower }}
+                                        {% endif %} </p>
+                                    </div>
+                                    <div class="col-2">
+                                        <h5>
+                                            <span class="align-middle {% if member.money < 0 %}badge text-bg-danger{% elif member.money == 0 %}badge text-bg-primary{% else %}badge text-bg-success{% endif %} align-self-left">Money :{{ member.money }}</span>
+                                        </h5>
+                                    </div>
 
+                                </div>
+                            </div>
                         </div>
-                        </div>
-                    </div>
                     </a>
                 {% endfor %}
             </div>

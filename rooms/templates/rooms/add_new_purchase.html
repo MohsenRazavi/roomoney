@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block page-title %}
     New Purchase
@@ -7,9 +8,13 @@
 
 
 {% block page-content %}
+    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
+        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
+        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
+    </div>
     <div class="container">
         <div class="row">
-            <p class="display-4">Add new purchase</p>
+            <p class="display-4 mt-3">Add new purchase</p>
             <p>First add your items. then fill other fields.</p>
             <p>Note : The items witch are not checked will be deleted, so if you add an item by mistake delete it.</p>
             <div class="col-9">
@@ -40,7 +45,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
-                            < form action="{% url 'add_to_purchase' %}" method="post">
+                            <form action="{% url 'add_to_purchase' %}" method="post">
                                 <div class="modal-body">
                                     {% csrf_token %}
                                     {{ item_form|crispy }}

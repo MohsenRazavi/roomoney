@@ -7,8 +7,9 @@
 
 {% block page-content %}
 
-    <div class="bg-secondary bg-gradiant mb-4">
-        <h2 class="text-dark">{{ room_name|capfirst }}</h2>
+    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
+        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
+        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
     </div>
 
     <div class="container">
@@ -22,11 +23,11 @@
                     <img src="{% static 'img/users/profile/anonymous.png' %}" alt="{{ roommate }} profile photo"
                          class="rounded-circle shadow mx-auto d-block" height="200" width="200">
                 {% endif %}
-            {% if roommate.biography %}
-                <p class="text-center fs-6 fw-light my-3">{{ roommate.biography }}</p>
-            {% else %}
-                <p class="text-center fs-6 fw-light my-3">I'm {{ roommate.full_name }} !</p>
-            {% endif %}
+                {% if roommate.biography %}
+                    <p class="text-center fs-6 fw-light my-3">{{ roommate.biography }}</p>
+                {% else %}
+                    <p class="text-center fs-6 fw-light my-3">I'm {{ roommate.full_name }} !</p>
+                {% endif %}
                 <div class="card shadow-sm">
                     <div class="card-header">
                         Info
@@ -39,17 +40,17 @@
                         <div>
                             <span class="fw-light">Full name : </span>
                             {% if roommate.full_name %}
-                            <span class="fw-normal">{{ roommate.full_name }}</span>
+                                <span class="fw-normal">{{ roommate.full_name }}</span>
                             {% else %}
-                            <span class="fw-normal">-</span>
+                                <span class="fw-normal">-</span>
                             {% endif %}
                         </div>
                         <div class="my-4">
                             <span class="fw-light">Phone number : </span>
                             {% if roommate.phone_number %}
-                            <span class="fw-normal">{{ roommate.phone_number }}</span>
+                                <span class="fw-normal">{{ roommate.phone_number }}</span>
                             {% else %}
-                            <span class="fw-normal">-</span>
+                                <span class="fw-normal">-</span>
                             {% endif %}
                         </div>
                         <div class="mb-4">
@@ -191,6 +192,8 @@
                 {% include 'rooms/right_panel.html' with room=room_obj %}
             </div>
         </div>
+
     </div>
 
 {% endblock %}
+

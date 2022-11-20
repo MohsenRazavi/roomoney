@@ -1,21 +1,26 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block page-title %}
-Leave Room
+    Leave Room
 {% endblock %}
 
 
 {% block page-content %}
-<div class="container">
-<p class="display-3">Are you sure ?!</p>
-<p>Are you sure you want to leave room ?</p>
-    <form method="post">
-        {% csrf_token %}
-        <div class="row">
-        <a href="{% url 'room_dashboard' %}" class="btn btn-primary my-3" type="submit">Back to Dashboard</a>
-        <button type="submit" class="btn btn-danger">LEAVE</button>
-        </div>
-    </form>
-</div>
+    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
+        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
+        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
+    </div>
+    <div class="container">
+        <p class="display-3">Are you sure ?!</p>
+        <p>Are you sure you want to leave room ?</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <a href="{% url 'room_dashboard' %}" class="btn btn-primary my-3" type="submit">Back to Dashboard</a>
+                <button type="submit" class="btn btn-danger">LEAVE</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

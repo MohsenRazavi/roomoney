@@ -1,12 +1,17 @@
 {% extends '_base.html' %}
+{% load static %}
 
 {% block page-title %}
     Item List
 {% endblock %}
 
 {% block page-content %}
+    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
+        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
+        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
+    </div>
     <div class="container">
-        <p class="display-4">Last items</p>
+        <p class="display-4 mt-3">Last items</p>
         <div class="row">
             <div class="col-9">
                 {% for item in items %}
@@ -22,18 +27,18 @@
                                     : {{ item.datetime_bought.date }}, Time : {{ item.datetime_bought.time }}</p></div>
                             </div>
                         </div>
-                    <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
-                        <div class="card-body border-top">
-                            <div class="row">
-                                <p class="fw-semibold">Description:</p>
-                                {% if item.description %}
-                                    <p class="fw-light">{{ item.description }}</p>
-                                {% else %}
-                                    <p class="fw-light">Nothing !</p>
-                                {% endif %}
-                            </div>
+                        <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
+                            <div class="card-body border-top">
+                                <div class="row">
+                                    <p class="fw-semibold">Description:</p>
+                                    {% if item.description %}
+                                        <p class="fw-light">{{ item.description }}</p>
+                                    {% else %}
+                                        <p class="fw-light">Nothing !</p>
+                                    {% endif %}
+                                </div>
 
-                    </div>
+                            </div>
 
 
                         </div>
