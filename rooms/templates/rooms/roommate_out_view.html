@@ -54,6 +54,11 @@
                                     <p class="text fw-normal" style="display: inline;">Purchaser : </p>
                                     <p class="text" style="display: inline;">{{ purchase.purchaser }}</p>
                                 </div>
+                                <div class="col">
+                                    <p class="text fw-normal" style="display: inline;">Checked out : </p>
+                                    <p class="text fw-normal" style="display: inline;">{% if purchase.is_payed %}
+                                        Yes{% else %}No{% endif %}</p>
+                                </div>
                                 <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
                                 <div class="col"><p class="text-muted fst-italic fw-light">Date
                                     : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p></div>

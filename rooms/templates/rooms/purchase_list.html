@@ -9,6 +9,9 @@
         <p class="display-4">Last Purchases</p>
         <div class="row">
             <div class="col-9">
+                {#                <div class="row">#}
+                {#                    <a href="#" class="btn btn-warning mt-3">Reckoning</a>#}
+                {#                </div>#}
                 {% for purchase in purchases %}
                     <div class="card my-3 shadow-sm" data-bs-toggle="collapse"
                          data-bs-target="#PurchaseDetail{{ forloop.counter }}"
@@ -21,9 +24,14 @@
                                     <p class="text fw-normal" style="display: inline;">Purchaser : </p>
                                     <p class="text" style="display: inline;">{{ purchase.purchaser }}</p>
                                 </div>
+                                <div class="col">
+                                    <p class="text fw-normal" style="display: inline;">Checked out : </p>
+                                    <p class="text fw-normal" style="display: inline;">{% if purchase.is_payed %}
+                                        Yes{% else %}No{% endif %}</p>
+                                </div>
                                 <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
                                 <div class="col"><p class="text-muted fst-italic fw-light">Date
-                                    : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p></div>
+                                    : {{ purchase.created_at.date }} Time : {{ purchase.created_at.time }}</p></div>
                             </div>
                         </div>
                         <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
@@ -54,18 +62,21 @@
                                     </div>
                                 </div>
                                 <div class="row">
-{#                                    <a href="{% url 'update_purchase' pk=purchase.id %}" class="btn btn-success mt-2">Update#}
-{#                                        Purchase</a>#}
-                                    <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete
-                                        Purchase</a>
+                                    {% if not purchase.is_payed %}
+                                        <a href="{% url 'checkout' pk=purchase.id %}" class="btn btn-warning mt-2">Checkout</a>
+                                        <a href="{% url 'delete_purchase' pk=purchase.id %}"
+                                           class="btn btn-danger mt-2">Delete
+                                            Purchase</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete
-                                        Purchase</a>
-{#                    <a href="{% url 'update_purchase' pk=purchase.id %}" class="btn btn-success mt-2">Update#}
-{#                                        Purchase</a>#}
+                    {% if not purchase.is_payed %}
+                        <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete
+                            Purchase</a>
+                        <a href="{% url 'checkout' pk=purchase.id %}" class="btn btn-warning mt-2">Checkout</a>
+                    {% endif %}
                 {% endfor %}
             </div>
             <div class="col-3">

@@ -13,5 +13,6 @@ urlpatterns = [
     path('roommate_out_view/<int:pk>/', views.RoommateOutView.as_view(), name='roommate_view'),
     path('room_delete/<int:pk>/', views.room_delete_view, name='room_delete'),
     path('item_list/<int:pk>/', views.item_list_view, name='item_list'),
+    path('checkout/<int:pk>/', views.checkout_view, name='checkout'),
 
 ]

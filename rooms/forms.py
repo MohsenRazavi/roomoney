@@ -51,5 +51,6 @@ class ItemCreateForm(forms.ModelForm):
         model = Item
         fields = [
             'name',
-            'price'
+            'price',
+            'description'
         ]

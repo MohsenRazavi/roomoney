@@ -141,8 +141,12 @@ class PurchaseDeleteView(UserPassesTestMixin, generic.DeleteView):
 
     def test_func(self):
         user = self.request.user
+        purchase = get_object_or_404(Purchase, id=self.kwargs['pk'])
         room = get_object_or_404(Purchase, id=self.kwargs['pk']).room
-        return user in room.member.all()
+        if purchase.is_payed:
+            return False
+        if user in room.member.all():
+            return True
 
     def get_success_url(self):
         return reverse_lazy('purchase_list', args=[self.request.user.room.first().id])
@@ -188,7 +192,7 @@ class RoommateOutView(UserPassesTestMixin, generic.DetailView):
 
     def test_func(self):
         user = self.request.user
-        room = get_object_or_404(get_user_model(), id=self.kwargs['pk']).room
+        room = get_object_or_404(get_user_model(), id=self.kwargs['pk']).room.first()
         return user in room.member.all()
 
     def get_context_data(self, **kwargs):
@@ -221,7 +225,7 @@ def room_delete_view(request, pk):
             purchase.delete()
         room.delete()
         return redirect(reverse('room_dashboard'))
-    else: # GET request
+    else:  # GET request
         return render(request, 'rooms/room_delete.html', context=context)
 
 
@@ -230,3 +234,33 @@ def item_list_view(request, pk):
     items = Item.objects.filter(room=room)
     context = {'items': items, 'room_obj': room}
     return render(request, 'rooms/item_list.html', context=context)
+
+
+def checkout_view(request, pk):
+    user = request.user
+    room = user.room.first()
+    purchase = get_object_or_404(Purchase, id=pk)
+    context = {'purchase': purchase, 'room_obj': room}
+    if request.method == 'POST':
+
+        all_money = purchase.sum
+        members = purchase.member
+        shared_money = all_money / members.count()
+
+        for member in members.all():
+            if member == purchase.purchaser:
+                purchase.purchaser.money += shared_money
+                purchase.purchaser.save()
+            else:
+                member.money += shared_money
+                member.save()
+
+        purchase.purchaser.money -= all_money
+        purchase.purchaser.save()
+
+        purchase.is_payed = True
+        purchase.save()
+
+        return redirect(reverse('purchase_list', args=[room.id]))
+    else:  # GET request
+        return render(request, 'rooms/checkout.html', context=context)
