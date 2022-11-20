@@ -202,11 +202,14 @@ class RoommateOutView(UserPassesTestMixin, generic.DetailView):
         user = self.request.user
         roommate = get_user_model().objects.filter(id=self.kwargs['pk'])
         room = user.room.first()
-        purchases = Purchase.objects.filter(Q(member__in=roommate) | Q(purchaser__in=roommate)).order_by('-created_at')
-        context['purchases'] = purchases
+        purchases_member = Purchase.objects.filter(member__in=roommate).exclude(purchaser__in=roommate).order_by('-created_at')
+        purchases_purchaser = Purchase.objects.filter(purchaser__in=roommate).order_by('-created_at')
+        context['purchases_purchaser'] = purchases_purchaser
+        context['purchases_member'] = purchases_member
         return context
 
 
+@login_required
 def room_delete_view(request, pk):
     room = Room.objects.get(id=pk)
     context = {'room_obj': room}
@@ -229,13 +232,14 @@ def room_delete_view(request, pk):
         return render(request, 'rooms/room_delete.html', context=context)
 
 
+@login_required
 def item_list_view(request, pk):
     room = Room.objects.get(pk=pk)
-    items = Item.objects.filter(room=room)
+    items = Item.objects.filter(room=room).order_by('-datetime_bought')
     context = {'items': items, 'room_obj': room}
     return render(request, 'rooms/item_list.html', context=context)
 
-
+@login_required
 def checkout_view(request, pk):
     user = request.user
     room = user.room.first()
