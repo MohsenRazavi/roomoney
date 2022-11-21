@@ -1,0 +1,33 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-title %}
+    Delete Note
+{% endblock %}
+
+
+{% block page-content %}
+    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
+        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
+        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
+    </div>
+    <div class="container">
+        <p class="display-3 mt-3">Are you sure ?!</p>
+        <p>Are you sure you want to delete {{ note.title }}?</p>
+        <div class="card-body border-top pt-3">
+            <div class="row">
+                <p class="text fw-light">
+                {{ note.text.capitalize|linebreaks }}
+                </p>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <a href="{% url 'note_list' pk=room_obj.id %}" class="btn btn-primary my-3" type="submit">Back
+                            to note list</a>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+{% endblock %}

@@ -14,6 +14,7 @@
                     <a class="nav-link" href="{% url 'new_purchase' %}">Add new Purchase</a>
                     <a class="nav-link" href="{% url 'purchase_list' pk=room.id %}">Last Purchases</a>
                     <a class="nav-link" href="{% url 'item_list' pk=room.id %}">Bought Items</a>
+                    <a class="nav-link" href="{% url 'note_list' pk=room.id %}">Notes</a>
                     {% if user == room.creator %}
                     <a class="nav-link" href="{% url 'room_options' pk=room.id %}">Options</a>
                     {% endif %}

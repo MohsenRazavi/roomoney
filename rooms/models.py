@@ -55,3 +55,15 @@ class Purchase(models.Model):
         self.sum = res
         self.save()
         return res
+
+
+class Note(models.Model):
+    title = models.CharField(max_length=150, blank=False, null=False)
+    text = models.TextField(blank=False, null=False)
+    datetime_create = models.DateTimeField(auto_now_add=True)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
+

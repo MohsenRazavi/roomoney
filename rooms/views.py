@@ -6,8 +6,8 @@ from django.views import generic
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
 
-from .models import Room, Item, Purchase
-from .forms import RoomCreateForm, RoomOptionsForm, NewPurchaseForm, ItemCreateForm
+from .models import Room, Item, Purchase, Note
+from .forms import RoomCreateForm, RoomOptionsForm, NewPurchaseForm, ItemCreateForm, NoteCreateForm
 
 
 @login_required
@@ -202,10 +202,23 @@ class RoommateOutView(UserPassesTestMixin, generic.DetailView):
         user = self.request.user
         roommate = get_user_model().objects.filter(id=self.kwargs['pk'])
         room = user.room.first()
-        purchases_member = Purchase.objects.filter(member__in=roommate).exclude(purchaser__in=roommate).order_by('-created_at')
+        purchases_member = Purchase.objects.filter(member__in=roommate).exclude(purchaser__in=roommate).order_by(
+            '-created_at')
         purchases_purchaser = Purchase.objects.filter(purchaser__in=roommate).order_by('-created_at')
+        share_purchaser = []
+        share_member = []
+        for purchase in purchases_purchaser:
+            all_money = purchase.calculate_sum()
+            shared_money = all_money / purchase.member.count()
+            share_purchaser.append(all_money - shared_money)
+        for purchase in purchases_member:
+            all_money = purchase.calculate_sum()
+            shared_money = all_money / purchase.member.count()
+            share_member.append(share_purchaser)
         context['purchases_purchaser'] = purchases_purchaser
         context['purchases_member'] = purchases_member
+        context['share_purchaser'] = share_purchaser
+        context['share_member'] = share_member
         return context
 
 
@@ -269,3 +282,53 @@ def checkout_view(request, pk):
         return redirect(reverse('purchase_list', args=[room.id]))
     else:  # GET request
         return render(request, 'rooms/checkout.html', context=context)
+
+
+class NoteListView(LoginRequiredMixin, generic.ListView):
+    model = Note
+    template_name = 'notes/note_list.html'
+
+    def get_context_data(self, **kwargs):
+        room = self.request.user.room.first()
+        context = super(NoteListView, self).get_context_data(**kwargs)
+        context['notes'] = Note.objects.filter(room=room)
+        context['room_obj'] = room
+        return context
+
+    def get_queryset(self):
+        return Note.objects.filter(room=self.request.user.room.first()).order_by('-datetime_create')
+
+
+class NoteDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Note
+    template_name = 'notes/note_delete.html'
+
+    def get_success_url(self):
+        room = self.request.user.room.first()
+        return reverse_lazy('note_list', args=[room.id])
+
+    def get_context_data(self, **kwargs):
+        context = super(NoteDeleteView, self).get_context_data()
+        context['room_obj'] = self.request.user.room.first()
+        return context
+
+
+class NoteCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Note
+    template_name = 'notes/note_create.html'
+    form_class = NoteCreateForm
+
+    def get_context_data(self, **kwargs):
+        context = super(NoteCreateView, self).get_context_data(**kwargs)
+        context['room_obj'] = self.request.user.room.first()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        user_form = NoteCreateForm(self.request.POST)
+        if user_form.is_valid():
+            new_note = user_form.save(commit=False)
+            new_note.user = self.request.user
+            new_note.room = self.request.user.room.first()
+            new_note.save()
+        room = self.request.user.room.first()
+        return redirect(reverse('note_list', args=[room.id]))

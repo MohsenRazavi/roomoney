@@ -26,7 +26,7 @@
                 {% if roommate.biography %}
                     <p class="text-center fs-6 fw-light my-3">{{ roommate.biography }}</p>
                 {% else %}
-                    <p class="text-center fs-6 fw-light my-3">I'm {{ roommate.full_name }} !</p>
+                    <p class="text-center fs-6 fw-light my-3">I'm {{ roommate.username }} !</p>
                 {% endif %}
                 <div class="card shadow-sm">
                     <div class="card-header">
@@ -118,7 +118,9 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-
+                                        <div class="row">
+                                            <p class="badge bg-danger">your share</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -177,7 +179,9 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-
+                                        <div class="row">
+                                            <p class="badge bg-success">your share</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

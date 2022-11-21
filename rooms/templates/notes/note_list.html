@@ -1,0 +1,56 @@
+{% extends '_base.html' %}
+{% load static %}
+
+{% block page-title %}
+    List of Notes
+{% endblock %}
+
+{% block page-content %}
+    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
+        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
+        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
+    </div>
+    <div class="container">
+        <p class="display-4 mt-3">All notes :</p>
+        <div class="row">
+            <div class="col-9">
+                <a href="{% url 'note_create' %}" class="btn btn-primary">Add new Note</a>
+                {% for note in notes %}
+                    <div class="card my-3 shadow-sm" data-bs-toggle="collapse"
+                         data-bs-target="#PurchaseDetail{{ forloop.counter }}"
+                         aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-2"><p class="text fw-normal" style="display: inline;">Title : </p>
+                                    <p class="text fw-semibold" style="display: inline;">{{ note.title }}</p></div>
+                                <div class="col">
+                                    <p class="text fw-normal" style="display: inline;">Author : </p>
+                                    <p class="text" style="display: inline;">{{ note.user }}</p>
+                                </div>
+                                <div class="col"><p class="text-muted fst-italic fw-light">Date
+                                    : {{ note.datetime_create.date }} Time : {{ note.datetime_create.time }}</p></div>
+                            </div>
+                        </div>
+                        <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
+                            <div class="card-body border-top">
+                                <div class="row">
+                                    <p class="fw-light">
+                                    {{ note.text.capitalize|linebreaks }}
+                                    </p>
+                                </div>
+                                <div class="row">
+                                    <a href="{% url 'note_delete' pk=note.id %}"
+                                       class="btn btn-danger mt-2">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-3">
+                {% include 'rooms/right_panel.html' with room=room_obj %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

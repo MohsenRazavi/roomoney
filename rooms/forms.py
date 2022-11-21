@@ -2,7 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.forms.widgets import CheckboxSelectMultiple
 
-from .models import Room, Purchase, Item
+from .models import Room, Purchase, Item, Note
 
 
 class RoomCreateForm(ModelForm):
@@ -53,4 +53,13 @@ class ItemCreateForm(forms.ModelForm):
             'name',
             'price',
             'description'
+        ]
+
+
+class NoteCreateForm(forms.ModelForm):
+    class Meta:
+        model = Note
+        fields = [
+            'title',
+            'text',
         ]

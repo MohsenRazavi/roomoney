@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Item, Purchase, Room
+from .models import Item, Purchase, Room, Note
 
 admin.site.register(Item)
 
@@ -21,4 +21,13 @@ class RoomAdmin(admin.ModelAdmin):
         'name',
         'building',
         'room_number',
+    )
+
+
+@admin.register(Note)
+class NoteAdmin(admin.ModelAdmin):
+    list_display = (
+        'title',
+        'user',
+        'datetime_create',
     )
