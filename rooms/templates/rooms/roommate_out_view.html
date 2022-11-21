@@ -57,7 +57,12 @@
                             <span class="fw-light">Email : </span>
                             <span class="fw-normal">{{ roommate.email }}</span>
                         </div>
-
+                        <div class="row">
+                            <h5>
+                                <span style="display: block;"
+                                      class="align-middle {% if roommate.money < 0 %}badge text-bg-danger{% elif roommate.money == 0 %}badge text-bg-primary{% else %}badge text-bg-success{% endif %} align-self-left">Money :{{ roommate.money }}</span>
+                            </h5>
+                        </div>
                     </div>
                 </div>
                 <div class="row my-3">
@@ -114,12 +119,17 @@
                                                         {% endif %} </p>
                                                         <p class="fw-light">Phone number : {{ member.phone_number }}</p>
                                                         <p class="fw-light">Email : {{ member.email }}</p>
+
                                                     </div>
                                                 {% endfor %}
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <p class="badge bg-danger">your share</p>
+                                            <h5>
+                                                <p style="display: block;"
+                                                   class="badge text-bg-danger">your share:
+                                                    -{{ purchase.member_share }}</p>
+                                            </h5>
                                         </div>
                                     </div>
                                 </div>
@@ -180,7 +190,10 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <p class="badge bg-success">your share</p>
+                                            <h5>
+                                            <p style="display: block;"
+                                               class="badge text-bg-success">your share: +{{ purchase.purchaser_share }}</p>
+                                            </h5>
                                         </div>
                                     </div>
                                 </div>

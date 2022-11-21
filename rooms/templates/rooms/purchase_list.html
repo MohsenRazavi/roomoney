@@ -78,11 +78,11 @@
                             </div>
                         </div>
                     </div>
-                    {% if not purchase.is_payed %}
-                        <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete
-                            Purchase</a>
-                        <a href="{% url 'checkout' pk=purchase.id %}" class="btn btn-warning mt-2">Checkout</a>
-                    {% endif %}
+{#                    {% if not purchase.is_payed %}#}
+{#                        <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete#}
+{#                            Purchase</a>#}
+{#                        <a href="{% url 'checkout' pk=purchase.id %}" class="btn btn-warning mt-2">Checkout</a>#}
+{#                    {% endif %}#}
                 {% endfor %}
             </div>
             <div class="col-3">

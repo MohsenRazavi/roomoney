@@ -79,6 +79,13 @@ def add_new_purchase(request):
             shared_money = all_money / new_purchase.member.count()
             items = new_purchase.items.all()
 
+            new_purchase.purchaser_share = all_money
+            if new_purchase.purchaser in new_purchase.member.all():
+                new_purchase.purchaser_share = all_money - shared_money
+            new_purchase.member_share = shared_money
+
+            new_purchase.save()
+
             for item in items:
                 item.in_purchase = True
                 item.save()
@@ -93,6 +100,7 @@ def add_new_purchase(request):
 
             new_purchase.purchaser.money += all_money
             new_purchase.purchaser.save()
+
 
             all_items = Item.objects.all()
             for item in all_items:
@@ -296,7 +304,8 @@ class NoteListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self):
-        return Note.objects.filter(room=self.request.user.room.first()).order_by('-datetime_create')
+        room = self.request.user.room.first()
+        return Note.objects.filter(room=room).order_by('-datetime_create')
 
 
 class NoteDeleteView(LoginRequiredMixin, generic.DeleteView):

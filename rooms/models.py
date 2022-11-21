@@ -44,6 +44,8 @@ class Purchase(models.Model):
     is_payed = models.BooleanField(default=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='purchases', null=True)
     sum = models.PositiveIntegerField(null=True)
+    purchaser_share = models.PositiveIntegerField(null=True)
+    member_share = models.PositiveIntegerField(null=True)
 
     def __str__(self):
         return f"<{self.title}, {self.items}>"
