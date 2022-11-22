@@ -288,7 +288,7 @@ class NoteListView(UserPassesTestMixin, LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         room = self.request.user.room.first()
         context = super(NoteListView, self).get_context_data(**kwargs)
-        context['notes'] = Note.objects.filter(room=room)
+        context['notes'] = Note.objects.filter(room=room).order_by('-datetime_create')
         context['room_obj'] = room
         return context
 
@@ -298,10 +298,6 @@ class NoteListView(UserPassesTestMixin, LoginRequiredMixin, generic.ListView):
         if user in room.member.all():
             return True
         return False
-
-    def get_queryset(self):
-        room = self.request.user.room.first()
-        return Note.objects.filter(room=room).order_by('-datetime_create')
 
 
 class NoteDeleteView(UserPassesTestMixin, LoginRequiredMixin, generic.DeleteView):

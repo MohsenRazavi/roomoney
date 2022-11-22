@@ -40,7 +40,7 @@ class Purchase(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     purchaser = models.ForeignKey(get_user_model(), related_name='purchase', on_delete=models.CASCADE, blank=False)
     items = models.ManyToManyField(Item, related_name='cart')
-    member = models.ManyToManyField(get_user_model(), related_name='shared_purchase', blank=True)
+    member = models.ManyToManyField(get_user_model(), related_name='shared_purchase', blank=False)
     is_payed = models.BooleanField(default=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='purchases', null=True)
     sum = models.PositiveIntegerField(null=True)
