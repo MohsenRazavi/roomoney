@@ -70,9 +70,9 @@
                         <p class="text fs-5">Membered in :</p>
                         {% for purchase in purchases_member %}
                             <div class="card my-3 shadow-sm" data-bs-toggle="collapse"
-                                 data-bs-target="#PurchaseDetail{{ forloop.counter }}"
-                                 aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">
-                                <div class="card-body">
+                                 data-bs-target="#PurchaseDetailMember{{ forloop.counter }}"
+                                 aria-expanded="false" aria-controls="PurchaseDetailMember{{ forloop.counter }}" style="cursor:pointer;">
+                                <div class="card-body pb-0">
                                     <div class="row">
                                         <div class="col"><p class="text fw-normal" style="display: inline;">Title : </p>
                                             <p class="text fw-semibold"
@@ -95,8 +95,13 @@
                                             {% endif %}
                                         </div>
                                     </div>
+                                    <h5 class="mt-2">
+                                        <p style="display: block;"
+                                           class="badge text-bg-danger">your share:
+                                            -{{ purchase.member_share }}</p>
+                                    </h5>
                                 </div>
-                                <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
+                                <div class="collapse" id="PurchaseDetailMember{{ forloop.counter }}">
                                     <div class="card-body border-top">
                                         <div class="row">
                                             <div class="col">
@@ -124,13 +129,7 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <h5>
-                                                <p style="display: block;"
-                                                   class="badge text-bg-danger">your share:
-                                                    -{{ purchase.member_share }}</p>
-                                            </h5>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -140,9 +139,9 @@
                         <p class="text fs-5">Purchaser in : </p>
                         {% for purchase in purchases_purchaser %}
                             <div class="card my-3 shadow-sm" data-bs-toggle="collapse"
-                                 data-bs-target="#PurchaseDetail{{ forloop.counter }}"
-                                 aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">
-                                <div class="card-body">
+                                 data-bs-target="#PurchaseDetailPurchaser{{ forloop.counter }}"
+                                 aria-expanded="false" aria-controls="PurchaseDetailPurchaser{{ forloop.counter }}" style="cursor:pointer;">
+                                <div class="card-body pb-0">
                                     <div class="row">
                                         <div class="col"><p class="text fw-normal" style="display: inline;">Title : </p>
                                             <p class="text fw-semibold"
@@ -161,8 +160,13 @@
                                             {% endif %}
                                         </div>
                                     </div>
+                                    <h5>
+                                        <p style="display: block;"
+                                           class="badge text-bg-success">your share:
+                                            +{{ purchase.purchaser_share }}</p>
+                                    </h5>
                                 </div>
-                                <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
+                                <div class="collapse" id="PurchaseDetailPurchaser{{ forloop.counter }}">
                                     <div class="card-body border-top">
                                         <div class="row">
                                             <div class="col">
@@ -188,12 +192,6 @@
                                                     </div>
                                                 {% endfor %}
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <h5>
-                                            <p style="display: block;"
-                                               class="badge text-bg-success">your share: +{{ purchase.purchaser_share }}</p>
-                                            </h5>
                                         </div>
                                     </div>
                                 </div>

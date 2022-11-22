@@ -15,9 +15,7 @@
         <div class="row">
             <div class="col-9">
                 {% for purchase in purchases %}
-                    <div class="card my-3 shadow-sm" data-bs-toggle="collapse"
-                         data-bs-target="#PurchaseDetail{{ forloop.counter }}"
-                         aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">
+                    <div class="card my-3 shadow-sm">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-2"><p class="text fw-normal" style="display: inline;">Title : </p>
@@ -38,7 +36,13 @@
                                     {% endif %}
                                 </div>
                             </div>
-
+                            <div class="row">
+                                <button class="btn btn-secondary" data-bs-toggle="collapse"
+                                        data-bs-target="#PurchaseDetail{{ forloop.counter }}"
+                                        aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">More
+                                    result
+                                </button>
+                            </div>
                         </div>
                         <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
                             <div class="card-body border-top">
@@ -78,11 +82,11 @@
                             </div>
                         </div>
                     </div>
-{#                    {% if not purchase.is_payed %}#}
-{#                        <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete#}
-{#                            Purchase</a>#}
-{#                        <a href="{% url 'checkout' pk=purchase.id %}" class="btn btn-warning mt-2">Checkout</a>#}
-{#                    {% endif %}#}
+                    {#                    {% if not purchase.is_payed %}#}
+                    {#                        <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete#}
+                    {#                            Purchase</a>#}
+                    {#                        <a href="{% url 'checkout' pk=purchase.id %}" class="btn btn-warning mt-2">Checkout</a>#}
+                    {#                    {% endif %}#}
                 {% endfor %}
             </div>
             <div class="col-3">

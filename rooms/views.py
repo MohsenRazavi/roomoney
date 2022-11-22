@@ -213,20 +213,9 @@ class RoommateOutView(UserPassesTestMixin, generic.DetailView):
         purchases_member = Purchase.objects.filter(member__in=roommate).exclude(purchaser__in=roommate).order_by(
             '-created_at')
         purchases_purchaser = Purchase.objects.filter(purchaser__in=roommate).order_by('-created_at')
-        share_purchaser = []
-        share_member = []
-        for purchase in purchases_purchaser:
-            all_money = purchase.calculate_sum()
-            shared_money = all_money / purchase.member.count()
-            share_purchaser.append(all_money - shared_money)
-        for purchase in purchases_member:
-            all_money = purchase.calculate_sum()
-            shared_money = all_money / purchase.member.count()
-            share_member.append(share_purchaser)
+
         context['purchases_purchaser'] = purchases_purchaser
         context['purchases_member'] = purchases_member
-        context['share_purchaser'] = share_purchaser
-        context['share_member'] = share_member
         return context
 
 
@@ -292,7 +281,7 @@ def checkout_view(request, pk):
         return render(request, 'rooms/checkout.html', context=context)
 
 
-class NoteListView(LoginRequiredMixin, generic.ListView):
+class NoteListView(UserPassesTestMixin, LoginRequiredMixin, generic.ListView):
     model = Note
     template_name = 'notes/note_list.html'
 
@@ -303,18 +292,32 @@ class NoteListView(LoginRequiredMixin, generic.ListView):
         context['room_obj'] = room
         return context
 
+    def test_func(self):
+        user = self.request.user
+        room = Room.objects.get(id=self.kwargs['pk'])
+        if user in room.member.all():
+            return True
+        return False
+
     def get_queryset(self):
         room = self.request.user.room.first()
         return Note.objects.filter(room=room).order_by('-datetime_create')
 
 
-class NoteDeleteView(LoginRequiredMixin, generic.DeleteView):
+class NoteDeleteView(UserPassesTestMixin, LoginRequiredMixin, generic.DeleteView):
     model = Note
     template_name = 'notes/note_delete.html'
 
     def get_success_url(self):
         room = self.request.user.room.first()
         return reverse_lazy('note_list', args=[room.id])
+
+    def test_func(self):
+        user = self.request.user
+        room = Note.objects.get(id=self.kwargs['pk']).room
+        if user in room.member.all():
+            return True
+        return False
 
     def get_context_data(self, **kwargs):
         context = super(NoteDeleteView, self).get_context_data()
