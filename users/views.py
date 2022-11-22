@@ -1,12 +1,14 @@
 from django.views import generic
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .models import CustomUser
 from .forms import UserUpdateForm
 
 
-class UserUpdateView(generic.UpdateView):
+class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = CustomUser
     form_class = UserUpdateForm
     success_url = reverse_lazy('room_dashboard')
@@ -18,6 +20,8 @@ class UserUpdateView(generic.UpdateView):
         return context
 
 
+@login_required
+@user_passes_test(test_func=lambda u: u.money == 0)
 def leave_room_view(request):
     user = request.user
     room = user.room.first()

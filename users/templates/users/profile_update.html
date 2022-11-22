@@ -21,8 +21,12 @@
                     {{ form|crispy }}
                     <div class="row">
                         <a href="{% url 'account_change_password' %}" class="btn btn-warning my-3">Change password</a>
-                        <button class="btn btn-primary" type="submit">Save</button>
-                        <a href="{% url 'leave_room' %}" class="btn btn-danger my-3">Leave this room</a>
+                        <button class="btn btn-primary mb-3" type="submit">Save</button>
+                        {% if user.money == 0 %}
+                        <a href="{% url 'leave_room' %}" class="btn btn-danger mb-3">Leave this room</a>
+                        {% else %}
+                            <p>You can't leave room while you didn't checked out.</p>
+                        {% endif %}
                     </div>
                 </form>
             </div>

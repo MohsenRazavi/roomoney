@@ -37,7 +37,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <button class="btn btn-secondary" data-bs-toggle="collapse"
+                                <button class="btn btn-light" data-bs-toggle="collapse"
                                         data-bs-target="#PurchaseDetail{{ forloop.counter }}"
                                         aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">More
                                     result
@@ -48,7 +48,7 @@
                             <div class="card-body border-top">
                                 <div class="row">
                                     <div class="col">
-                                        <p class="text fst-normal">Items :</p>
+                                        <p class="text fst-normal">Items({{ purchase.items.count }}) :</p>
                                         {% for item in purchase.items.all %}
                                             <div class="border-bottom">
                                                 <p class="fw-light mt-2">Name : {{ item.name }}</p>
@@ -57,7 +57,7 @@
                                         {% endfor %}
                                     </div>
                                     <div class="col">
-                                        <p class="text fst-normal">Shared members :</p>
+                                        <p class="text fst-normal">Shared members({{ purchase.member.count }}, each one {{ purchase.member_share }}) :</p>
                                         {% for member in purchase.member.all %}
                                             <div class="border-bottom">
                                                 <p class="fw-light mt-2">{% if member.full_name %}
