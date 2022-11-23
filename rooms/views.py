@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import generic
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
+from django.contrib import messages
 
 from .models import Room, Item, Purchase, Note
 from .forms import RoomCreateForm, RoomOptionsForm, NewPurchaseForm, ItemCreateForm, NoteCreateForm
@@ -33,6 +34,7 @@ def room_home_view(request):
             user.has_room = True
             user.save()
             context['room_obj'] = new_room
+            messages.success(request, 'Room created successfully.')
         return render(request, 'rooms/room_dashboard_has_room.html', context=context)
 
 
@@ -49,6 +51,7 @@ class RoomOptionsView(UserPassesTestMixin, generic.UpdateView, LoginRequiredMixi
         for member in room.member.all():
             member.has_room = True
             member.save()
+        messages.success(request, 'Settings are set successfully.')
         return redirect(reverse_lazy('room_dashboard'))
 
     def test_func(self):
@@ -101,11 +104,11 @@ def add_new_purchase(request):
             new_purchase.purchaser.money += all_money
             new_purchase.purchaser.save()
 
-
             all_items = Item.objects.all()
             for item in all_items:
                 if not item.in_purchase:
                     item.delete()
+                messages.success(request, 'Purchase saved successfully')
             return redirect(reverse('purchase_list', args=[room.id]))
     return render(request, 'rooms/add_new_purchase.html', context=context)
 

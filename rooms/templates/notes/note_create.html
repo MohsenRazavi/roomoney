@@ -6,15 +6,13 @@
     Note Create
 {% endblock %}
 
+{% block page-titr %}
+Create New Note
+{% endblock %}
 
 {% block page-content %}
-    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
-        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
-        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
-    </div>
     <div class="container">
         <div class="row">
-            <p class="display-4 mt-3">Create New Note</p>
             <div class="col-9">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}

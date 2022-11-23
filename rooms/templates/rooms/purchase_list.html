@@ -4,14 +4,11 @@
 {% block page-title %}
     Purchase List
 {% endblock %}
-
+{% block page-titr %}
+Last Purchases
+{% endblock %}
 {% block page-content %}
-    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
-        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
-        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
-    </div>
     <div class="container">
-        <p class="display-4 mt-3">Last Purchases</p>
         <div class="row">
             <div class="col-9">
                 {% for purchase in purchases %}

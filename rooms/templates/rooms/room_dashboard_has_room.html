@@ -5,13 +5,12 @@
     Room Dashboard
 {% endblock %}
 
+{% block page-titr %}
+Roommates
+{% endblock %}
+
 {% block page-content %}
-    <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
-        <p class="text-light text-center fs-2" >{{ room_name|capfirst }}</p>
-        <p class="text-light text-center fs-6" >{{ room_obj.description }}</p>
-    </div>
     <div class="container">
-        <p class="display-4 mt-2">Roommates</p>
         <div class="row">
             <div class="col-9">
                 {% for member in members %}
