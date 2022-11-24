@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     # third party
+    'jalali_date',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -105,12 +107,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'fa'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
+USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

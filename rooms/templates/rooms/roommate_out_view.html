@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block page-title %}
     Roommate
@@ -78,7 +79,7 @@
 
                                         <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
                                         <div class="col"><p class="text-muted fst-italic fw-light">Date
-                                            : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p>
+                                            : {{ purchase.created_at.date|to_jalali:'%Y/%m/%d' }}, Time : {{ purchase.created_at.time }}</p>
                                         </div>
                                         <div class="col">
                                             {% if purchase.is_payed %}
@@ -143,7 +144,7 @@
 
                                         <div class="col"><p class="text">Total price : {{ purchase.sum }}</p></div>
                                         <div class="col"><p class="text-muted fst-italic fw-light">Date
-                                            : {{ purchase.created_at.date }}, Time : {{ purchase.created_at.time }}</p>
+                                            : {{ purchase.created_at.date|to_jalali:'%Y/%m/%d' }}, Time : {{ purchase.created_at.time }}</p>
                                         </div>
                                         <div class="col">
                                             {% if purchase.is_payed %}

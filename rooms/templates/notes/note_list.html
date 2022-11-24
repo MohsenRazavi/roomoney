@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block page-title %}
     List of Notes
@@ -28,7 +29,7 @@
                                     <p class="text" style="display: inline;">{{ note.user }}</p>
                                 </div>
                                 <div class="col"><p class="text-muted fst-italic fw-light">Date
-                                    : {{ note.datetime_create.date }} Time : {{ note.datetime_create.time }}</p></div>
+                                    : {{ note.datetime_create.date|to_jalali:'%Y/%m/%d' }} Time : {{ note.datetime_create.time }}</p></div>
                             </div>
                         </div>
                         <div class="collapse" id="NoteDetail{{ forloop.counter }}">

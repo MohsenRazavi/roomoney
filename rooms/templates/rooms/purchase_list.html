@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block page-title %}
     Purchase List
@@ -26,7 +27,7 @@
                                 </div>
                                 <div class="col-2"><p class="text">Total price : {{ purchase.sum }}</p></div>
                                 <div class="col"><p class="text-muted fst-italic fw-light">Date
-                                    : {{ purchase.created_at.date }} Time : {{ purchase.created_at.time }}</p></div>
+                                    : {{ purchase.created_at.date|to_jalali:'%Y/%m/%d' }} Time : {{ purchase.created_at.time }}</p></div>
                                 <div class="col-1">
                                     {% if purchase.is_payed %}
                                         <p class="badge text fs-6 text-bg-light" style="display: inline;">

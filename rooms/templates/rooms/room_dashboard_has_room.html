@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 {% load static %}
+{% load jalali_tags %}
 
 {% block page-title %}
     Room Dashboard
@@ -18,7 +19,7 @@ Roommates
                         <div class="card my-3 shadow-sm">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-10">
+                                    <div class="col">
                                         {% if member.profile_photo %}
                                             <img src="{{ member.profile_photo.url }}" alt="{{ member }} profile photo"
                                                  class="rounded-circle shadow-sm" height="50" width="50">
@@ -27,15 +28,16 @@ Roommates
                                                  alt="{{ member }} profile photo" class="rounded-circle shadow-sm"
                                                  height="50" width="50">
                                         {% endif %}
-                                        <p class="text m-1" style="display: inline;">{% if member.full_name %}
-                                            {{ member.full_name }}
-                                        {% else %}
-                                            @{{ member|lower }}
-                                        {% endif %} </p>
+                                        <p class="text m-1" style="display: inline;">
+                                            {{ member }}
+                                        </p>
+                                    </div>
+                                    <div class="col">
+                                        <p class="fw-light" style="margin-top: 3%;">Last login: {{ member.last_login.date|to_jalali:'%Y/%m/%d' }}</p>
                                     </div>
                                     <div class="col-2">
                                         <h5>
-                                            <span class="align-middle {% if member.money < 0 %}badge text-bg-danger{% elif member.money == 0 %}badge text-bg-primary{% else %}badge text-bg-success{% endif %} align-self-left">Money :{{ member.money }}</span>
+                                            <span class="{% if member.money < 0 %}badge text-bg-danger{% elif member.money == 0 %}badge text-bg-primary{% else %}badge text-bg-success{% endif %} align-self-left" style="margin-top: 6%;">Money :{{ member.money }}</span>
                                         </h5>
                                     </div>
 
