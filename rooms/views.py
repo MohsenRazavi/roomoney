@@ -6,6 +6,7 @@ from django.views import generic
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 
 from .models import Room, Item, Purchase, Note
 from .forms import RoomCreateForm, RoomOptionsForm, NewPurchaseForm, ItemCreateForm, NoteCreateForm
@@ -16,6 +17,8 @@ def room_home_view(request):
     context = {}
     user = request.user
     if request.method == 'GET':
+        if (not user.full_name) or (not user.profile_photo) or (not user.biography) or (not user.phone_number):
+            messages.warning(request, 'Please Complete your profile.')
         if user.has_room:
             room = user.room.first()
             members = room.member.all()
@@ -108,7 +111,7 @@ def add_new_purchase(request):
             for item in all_items:
                 if not item.in_purchase:
                     item.delete()
-                messages.success(request, 'Purchase saved successfully')
+            messages.success(request, 'Purchase saved successfully')
             return redirect(reverse('purchase_list', args=[room.id]))
     return render(request, 'rooms/add_new_purchase.html', context=context)
 
@@ -122,12 +125,14 @@ def add_item_to_purchase(request):
             new_item = user_item.save(commit=False)
             new_item.room = room
             new_item.save()
+            messages.success(request, f'{new_item.name} added to purchase successfully.')
             return redirect(reverse('new_purchase'))
 
 
-class DeleteItemFromPurchase(generic.DeleteView, LoginRequiredMixin):
+class DeleteItemFromPurchase(LoginRequiredMixin, SuccessMessageMixin, generic.DeleteView):
     model = Item
     success_url = reverse_lazy('new_purchase')
+    success_message = 'item deleted successfully.'
 
 
 @login_required
@@ -138,6 +143,8 @@ def purchase_list_view(request, pk):
         'room_obj': room,
         'purchases': purchases,
     }
+    not_payed_count = purchases.filter(is_payed=False).count()
+    messages.info(request, f'{not_payed_count} not checkout purchases.')
     return render(request, 'rooms/purchase_list.html', context=context)
 
 
@@ -168,6 +175,7 @@ class PurchaseDeleteView(UserPassesTestMixin, generic.DeleteView):
 
     def post(self, request, *args, **kwargs):
         purchase = Purchase.objects.get(pk=self.kwargs['pk'])
+        messages.success(self.request, f'{purchase.title} deleted successfully.')
 
         all_money = purchase.sum
         members = purchase.member
@@ -193,7 +201,7 @@ class PurchaseDeleteView(UserPassesTestMixin, generic.DeleteView):
             'room_obj': room,
             'purchases': purchases,
         }
-        return render(request, 'rooms/purchase_list.html', context=context)
+        return redirect(reverse('purchase_list', args=[self.request.user.room.first().id]))
 
 
 class RoommateOutView(UserPassesTestMixin, generic.DetailView):
@@ -216,6 +224,11 @@ class RoommateOutView(UserPassesTestMixin, generic.DetailView):
         purchases_member = Purchase.objects.filter(member__in=roommate).exclude(purchaser__in=roommate).order_by(
             '-created_at')
         purchases_purchaser = Purchase.objects.filter(purchaser__in=roommate).order_by('-created_at')
+        roommate_money = get_object_or_404(get_user_model(), id=self.kwargs['pk']).money
+        if roommate_money < 0:
+            messages.info(self.request, 'This user is debtor.')
+        if roommate_money > 0:
+            messages.info(self.request, 'This user is creditor.')
 
         context['purchases_purchaser'] = purchases_purchaser
         context['purchases_member'] = purchases_member
@@ -233,13 +246,13 @@ def room_delete_view(request, pk):
         for member in members:
             member.has_room = False
             member.money = 0
-            member.status = get_user_model().STATUS_CHOICES[0][0]
             member.save()
         for purchase in purchases:
             for item in purchase.items.all():
                 item.delete()
             purchase.delete()
         room.delete()
+        messages.success(request, 'Room deleted successfully.')
         return redirect(reverse('room_dashboard'))
     else:  # GET request
         return render(request, 'rooms/room_delete.html', context=context)
@@ -278,7 +291,7 @@ def checkout_view(request, pk):
 
         purchase.is_payed = True
         purchase.save()
-
+        messages.success(request, f'{purchase.title} checked out successfully.')
         return redirect(reverse('purchase_list', args=[room.id]))
     else:  # GET request
         return render(request, 'rooms/checkout.html', context=context)
@@ -309,6 +322,8 @@ class NoteDeleteView(UserPassesTestMixin, LoginRequiredMixin, generic.DeleteView
 
     def get_success_url(self):
         room = self.request.user.room.first()
+        note = get_object_or_404(Note, id=self.kwargs['pk'])
+        messages.success(self.request, f'{note.title} deleted successfully.')
         return reverse_lazy('note_list', args=[room.id])
 
     def test_func(self):
@@ -342,4 +357,5 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
             new_note.room = self.request.user.room.first()
             new_note.save()
         room = self.request.user.room.first()
+        messages.success(self.request, 'Note created successfully.')
         return redirect(reverse('note_list', args=[room.id]))

@@ -11,8 +11,13 @@
 
 <header>
     <div style="display: flex; flex-direction: column; justify-content: center; vertical-align: center; height: 20em; background-image: url('{% static 'img/template/header2 copy.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
-        <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
-        <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
+        {% if room_obj %}
+            <p class="text-light text-center fs-2">{{ room_obj.name|capfirst }}</p>
+            <p class="text-light text-center fs-6">{{ room_obj.description }}</p>
+        {% else %}
+            <p class="text-light text-center fs-2">The RooMoney</p>
+            <p class="text-light text-center fs-6">Powered by mohsenrazavi_2095</p>
+        {% endif %}
     </div>
 </header>
 
@@ -30,7 +35,7 @@
                     </div>
                 </div>
             {% endfor %}
-                </div>
+            </div>
         {% endif %}
 
 </div>
