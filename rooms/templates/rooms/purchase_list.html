@@ -52,6 +52,7 @@ Last Purchases
                                                 <p class="fw-light">Price : {{ item.price }}</p>
                                             </div>
                                         {% endfor %}
+                                    <p class="text fw-light mt-3">Added by : {{ purchase.adder }}</p>
                                     </div>
                                     <div class="col">
                                         <p class="text fst-normal">Shared members({{ purchase.member.count }}, each one {{ purchase.member_share }}) :</p>

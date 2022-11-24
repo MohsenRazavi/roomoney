@@ -18,8 +18,14 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_context_data(self, **kwargs):
         context = super(UserUpdateView, self).get_context_data(**kwargs)
         context['room_obj'] = self.request.user.room.first()
-        messages.success(self.request, 'Profile updated successfully.')
         return context
+
+    def post(self, request, *args, **kwargs):
+        super(UserUpdateView, self).post(request, **kwargs)
+        messages.success(self.request, 'Profile updated successfully.')
+        return redirect(reverse('room_dashboard'))
+
+
 
 
 @login_required

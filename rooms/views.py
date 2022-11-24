@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import generic
 from django.urls import reverse_lazy, reverse
-from django.db.models import Q
+from django.http import HttpResponseForbidden
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
@@ -21,7 +21,7 @@ def room_home_view(request):
             messages.warning(request, 'Please Complete your profile.')
         if user.has_room:
             room = user.room.first()
-            members = room.member.all()
+            members = room.member.all().order_by('-last_login')
             context = {'members': members, 'room_name': room.name, 'room_obj': room}
             return render(request, 'rooms/room_dashboard_has_room.html', context=context)
         else:
@@ -79,6 +79,7 @@ def add_new_purchase(request):
         if user_form.is_valid():
             new_purchase = user_form.save(commit=False)
             new_purchase.room = room
+            new_purchase.adder = user
             new_purchase.save()
             user_form.save_m2m()
             all_money = new_purchase.calculate_sum()
@@ -137,6 +138,7 @@ class DeleteItemFromPurchase(LoginRequiredMixin, SuccessMessageMixin, generic.De
 
 @login_required
 def purchase_list_view(request, pk):
+    user = request.user
     room = Room.objects.get(pk=pk)
     purchases = Purchase.objects.filter(room=room).order_by('-created_at')
     context = {
@@ -145,6 +147,8 @@ def purchase_list_view(request, pk):
     }
     not_payed_count = purchases.filter(is_payed=False).count()
     messages.info(request, f'{not_payed_count} not checkout purchases.')
+    if user not in room.member.all():
+        return HttpResponseForbidden()
     return render(request, 'rooms/purchase_list.html', context=context)
 
 
