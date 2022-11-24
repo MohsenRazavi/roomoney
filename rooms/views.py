@@ -264,9 +264,12 @@ def room_delete_view(request, pk):
 
 @login_required
 def item_list_view(request, pk):
+    user = request.user
     room = Room.objects.get(pk=pk)
     items = Item.objects.filter(room=room).order_by('-datetime_bought')
     context = {'items': items, 'room_obj': room}
+    if user not in room.member.all():
+        return HttpResponseForbidden()
     return render(request, 'rooms/item_list.html', context=context)
 
 
