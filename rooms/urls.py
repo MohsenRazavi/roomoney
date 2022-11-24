@@ -14,6 +14,7 @@ urlpatterns = [
     path('room_delete/<int:pk>/', views.room_delete_view, name='room_delete'),
     path('item_list/<int:pk>/', views.item_list_view, name='item_list'),
     path('checkout/<int:pk>/', views.checkout_view, name='checkout'),
+    path('clear_history/<int:pk>/', views.clear_history_view, name='clear_history'),
     #
     path('notes/<int:pk>/', views.NoteListView.as_view(), name='note_list'),
     path('notes/note_delete/<int:pk>/', views.NoteDeleteView.as_view(), name='note_delete'),

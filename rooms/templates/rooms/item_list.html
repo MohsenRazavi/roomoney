@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block page-titr %}
-Last items
+    Last items
 {% endblock %}
 
 {% block page-content %}
@@ -16,11 +16,12 @@ Last items
                 {% for item in items %}
                     <div class="card my-3 shadow-sm" data-bs-toggle="collapse"
                          data-bs-target="#PurchaseDetail{{ forloop.counter }}"
-                         aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">
+                         aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}" style="cursor: pointer;">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col"><p class="text fw-normal" style="display: inline;">Title : </p>
                                     <p class="text fw-semibold" style="display: inline;">{{ item.name }}</p></div>
+                                <div class="col"><p class="text">Purchase : {{ item.cart.first.title }}</p></div>
                                 <div class="col"><p class="text">Price : {{ item.price }}</p></div>
                                 <div class="col"><p class="text-muted fst-italic fw-light">Date
                                     : {{ item.datetime_bought.date }}, Time : {{ item.datetime_bought.time }}</p></div>

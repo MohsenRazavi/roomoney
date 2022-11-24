@@ -140,7 +140,7 @@ class DeleteItemFromPurchase(LoginRequiredMixin, SuccessMessageMixin, generic.De
 def purchase_list_view(request, pk):
     user = request.user
     room = Room.objects.get(pk=pk)
-    purchases = Purchase.objects.filter(room=room).order_by('-created_at')
+    purchases = Purchase.objects.filter(room=room, is_active=True).order_by('-created_at')
     context = {
         'room_obj': room,
         'purchases': purchases,
@@ -225,9 +225,10 @@ class RoommateOutView(UserPassesTestMixin, generic.DetailView):
         user = self.request.user
         roommate = get_user_model().objects.filter(id=self.kwargs['pk'])
         room = user.room.first()
-        purchases_member = Purchase.objects.filter(member__in=roommate).exclude(purchaser__in=roommate).order_by(
+        purchases_member = Purchase.objects.filter(member__in=roommate, is_active=True).exclude(
+            purchaser__in=roommate).order_by(
             '-created_at')
-        purchases_purchaser = Purchase.objects.filter(purchaser__in=roommate).order_by('-created_at')
+        purchases_purchaser = Purchase.objects.filter(purchaser__in=roommate, is_active=True).order_by('-created_at')
         roommate_money = get_object_or_404(get_user_model(), id=self.kwargs['pk']).money
         if roommate_money < 0:
             messages.info(self.request, 'This user is debtor.')
@@ -266,7 +267,7 @@ def room_delete_view(request, pk):
 def item_list_view(request, pk):
     user = request.user
     room = Room.objects.get(pk=pk)
-    items = Item.objects.filter(room=room).order_by('-datetime_bought')
+    items = Item.objects.filter(room=room, is_active=True).order_by('-datetime_bought')
     context = {'items': items, 'room_obj': room}
     if user not in room.member.all():
         return HttpResponseForbidden()
@@ -279,6 +280,10 @@ def checkout_view(request, pk):
     room = user.room.first()
     purchase = get_object_or_404(Purchase, id=pk)
     context = {'purchase': purchase, 'room_obj': room}
+
+    if user not in room.member.all():
+        return HttpResponseForbidden
+
     if request.method == 'POST':
 
         all_money = purchase.sum
@@ -366,3 +371,24 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
         room = self.request.user.room.first()
         messages.success(self.request, 'Note created successfully.')
         return redirect(reverse('note_list', args=[room.id]))
+
+
+@login_required
+def clear_history_view(request, pk):
+    user = request.user
+    room = Room.objects.get(id=pk)
+    purchases = room.purchases.filter(room=room, is_payed=True, is_active=True).order_by('-created_at')
+    if user != room.creator:
+        return HttpResponseForbidden
+    if request.method == 'POST':
+        for purchase in purchases:
+            items = purchase.items.all()
+            for item in items:
+                item.is_active = False
+                item.save()
+            purchase.is_active = False
+            purchase.save()
+        messages.success(request, 'History cleared successfully.')
+        return redirect(reverse('purchase_list', args=[room.id]))
+    else:  # Get request
+        return render(request, 'rooms/clear_history.html', context={'purchases': purchases, 'room_obj': room})

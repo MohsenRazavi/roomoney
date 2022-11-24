@@ -5,12 +5,15 @@
     Purchase List
 {% endblock %}
 {% block page-titr %}
-Last Purchases
+    Last Purchases
 {% endblock %}
 {% block page-content %}
     <div class="container">
         <div class="row">
             <div class="col-9">
+            {% if user == room_obj.creator and purchases %}
+                <a href="{% url 'clear_history' pk=room_obj.id %}" class="btn btn-danger">Clear history</a>
+            {% endif %}
                 {% for purchase in purchases %}
                     <div class="card my-3 shadow-sm">
                         <div class="card-body">
@@ -52,10 +55,11 @@ Last Purchases
                                                 <p class="fw-light">Price : {{ item.price }}</p>
                                             </div>
                                         {% endfor %}
-                                    <p class="text fw-light mt-3">Added by : {{ purchase.adder }}</p>
+                                        <p class="text fw-light mt-3">Added by : {{ purchase.adder }}</p>
                                     </div>
                                     <div class="col">
-                                        <p class="text fst-normal">Shared members({{ purchase.member.count }}, each one {{ purchase.member_share }}) :</p>
+                                        <p class="text fst-normal">Shared members({{ purchase.member.count }}, each
+                                            one {{ purchase.member_share }}) :</p>
                                         {% for member in purchase.member.all %}
                                             <div class="border-bottom">
                                                 <p class="fw-light mt-2">{% if member.full_name %}
@@ -80,11 +84,6 @@ Last Purchases
                             </div>
                         </div>
                     </div>
-                    {#                    {% if not purchase.is_payed %}#}
-                    {#                        <a href="{% url 'delete_purchase' pk=purchase.id %}" class="btn btn-danger mt-2">Delete#}
-                    {#                            Purchase</a>#}
-                    {#                        <a href="{% url 'checkout' pk=purchase.id %}" class="btn btn-warning mt-2">Checkout</a>#}
-                    {#                    {% endif %}#}
                 {% endfor %}
             </div>
             <div class="col-3">

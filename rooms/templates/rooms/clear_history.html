@@ -1,0 +1,88 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page-title %}
+    Delete Purchase
+{% endblock %}
+
+
+{% block page-content %}
+    <div class="container">
+        <p class="display-3 mt-3">Are you sure ?!</p>
+        <p>Are you sure you want to clear your purchase history?</p>
+        <p class="alert alert-danger">Note: These purchases will not be accessible after clear history.</p>
+        {% for purchase in purchases %}
+            <div class="card my-3 shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-2"><p class="text fw-normal" style="display: inline;">Title : </p>
+                            <p class="text fw-semibold" style="display: inline;">{{ purchase.title }}</p></div>
+                        <div class="col">
+                            <p class="text fw-normal" style="display: inline;">Purchaser : </p>
+                            <p class="text" style="display: inline;">{{ purchase.purchaser }}</p>
+                        </div>
+                        <div class="col-2"><p class="text">Total price : {{ purchase.sum }}</p></div>
+                        <div class="col"><p class="text-muted fst-italic fw-light">Date
+                            : {{ purchase.created_at.date }} Time : {{ purchase.created_at.time }}</p></div>
+                        <div class="col-1">
+                            {% if purchase.is_payed %}
+                                <p class="badge text fs-6 text-bg-light" style="display: inline;">
+                                    ✔</p>
+                            {% else %}
+                                <p class="badge text fs-6 text-bg-light" style="display: inline;">❌</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-light" data-bs-toggle="collapse"
+                                data-bs-target="#PurchaseDetail{{ forloop.counter }}"
+                                aria-expanded="false" aria-controls="PurchaseDetail{{ forloop.counter }}">More
+                            result
+                        </button>
+                    </div>
+                </div>
+                <div class="collapse" id="PurchaseDetail{{ forloop.counter }}">
+                    <div class="card-body border-top">
+                        <div class="row">
+                            <div class="col">
+                                <p class="text fst-normal">Items({{ purchase.items.count }}) :</p>
+                                {% for item in purchase.items.all %}
+                                    <div class="border-bottom">
+                                        <p class="fw-light mt-2">Name : {{ item.name }}</p>
+                                        <p class="fw-light">Price : {{ item.price }}</p>
+                                    </div>
+                                {% endfor %}
+                                <p class="text fw-light mt-3">Added by : {{ purchase.adder }}</p>
+                            </div>
+                            <div class="col">
+                                <p class="text fst-normal">Shared members({{ purchase.member.count }}, each
+                                    one {{ purchase.member_share }}) :</p>
+                                {% for member in purchase.member.all %}
+                                    <div class="border-bottom">
+                                        <p class="fw-light mt-2">{% if member.full_name %}
+                                            Name : {{ member.full_name }}
+                                        {% else %}
+                                            Username : {{ member }}
+                                        {% endif %} </p>
+                                        <p class="fw-light">Phone number : {{ member.phone_number }}</p>
+                                        <p class="fw-light">Email : {{ member.email }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+            <a href="{% url 'purchase_list' pk=room_obj.id %}" class="btn btn-primary">Back to purchase list</a>
+            <button type="submit" class="btn btn-danger my-3">Clear history</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

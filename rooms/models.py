@@ -30,6 +30,7 @@ class Item(models.Model):
     room = models.ForeignKey(Room, related_name='item', on_delete=models.CASCADE)
     datetime_bought = models.DateTimeField(auto_now_add=True)
     description = models.TextField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f'<{self.name}, {self.price}>'
@@ -43,6 +44,7 @@ class Purchase(models.Model):
     member = models.ManyToManyField(get_user_model(), related_name='shared_purchase', blank=False)
     adder = models.ForeignKey(get_user_model(), related_name='add_purchases', null=True, on_delete=models.CASCADE)
     is_payed = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='purchases', null=True)
     sum = models.PositiveIntegerField(null=True)
     purchaser_share = models.PositiveIntegerField(null=True)
