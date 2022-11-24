@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block page-titr %}
-All notes
+    All notes
 {% endblock %}
 
 {% block page-content %}
@@ -15,10 +15,11 @@ All notes
             <div class="col-9">
                 <a href="{% url 'note_create' %}" class="btn btn-primary">Add new Note</a>
                 {% for note in notes %}
-                    <div class="card my-3 shadow-sm" data-bs-toggle="collapse"
-                         data-bs-target="#NoteDetail{{ forloop.counter }}"
-                         aria-expanded="false" aria-controls="NoteDetail{{ forloop.counter }}" style="cursor: pointer;">
-                        <div class="card-body">
+                    <div class="card my-3 shadow-sm">
+                        <div class="card-body" data-bs-toggle="collapse"
+                             data-bs-target="#NoteDetail{{ forloop.counter }}"
+                             aria-expanded="false" aria-controls="NoteDetail{{ forloop.counter }}"
+                             style="cursor: pointer;">
                             <div class="row">
                                 <div class="col-2"><p class="text fw-normal" style="display: inline;">Title : </p>
                                     <p class="text fw-semibold" style="display: inline;">{{ note.title }}</p></div>
@@ -34,7 +35,7 @@ All notes
                             <div class="card-body border-top">
                                 <div class="row fw-light">
                                     <p>
-                                    {{ note.text.capitalize|linebreaks }}
+                                        {{ note.text.capitalize|linebreaks }}
                                     </p>
                                 </div>
                                 <div class="row">

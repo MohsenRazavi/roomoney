@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
 
 from .models import CustomUser
 from .forms import UserUpdateForm
@@ -17,6 +18,7 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_context_data(self, **kwargs):
         context = super(UserUpdateView, self).get_context_data(**kwargs)
         context['room_obj'] = self.request.user.room.first()
+        messages.success(self.request, 'Profile updated successfully.')
         return context
 
 
@@ -34,6 +36,7 @@ def leave_room_view(request):
             room.member.remove(user)
             user.save()
             room.save()
+            messages.success(request, 'Leaved from room successfully.')
         return redirect(reverse('room_dashboard'))
     else: # GET request
         return render(request, 'users/leave_room.html', context={'room_obj': room})
